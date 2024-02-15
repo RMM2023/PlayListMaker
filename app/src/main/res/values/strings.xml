@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PlayListMaker</string>
+        <string name="title" translatable="false">PlayListMaker</string>
+
 </resources>
