@@ -34,14 +34,17 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/share_button"
         style="@style/ButtonSettings"
         android:text="@string/share"
         app:drawableRightCompat = "@drawable/toshare" />
     <Button
+        android:id="@+id/support_button"
         style="@style/ButtonSettings"
         android:text="@string/support"
         app:drawableRightCompat = "@drawable/support" />
     <Button
+        android:id="@+id/agree_button"
         style="@style/ButtonSettings"
         android:text="@string/agreement"
         app:drawableRightCompat = "@drawable/agreement"/>
