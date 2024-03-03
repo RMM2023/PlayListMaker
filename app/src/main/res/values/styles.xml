@@ -59,9 +59,7 @@
         <item name="android:textColor">@color/black</item>
     </style>
     <style name="SearchButtonStyle">
-        <item name="android:layout_width">48dp</item>
-        <item name="android:layout_height">48dp</item>
-        <item name="android:background">@color/white</item>
+        <item name="iconTint">@color/black</item>
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:drawableTint">@color/black</item>
     </style>
