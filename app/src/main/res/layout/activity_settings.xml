@@ -16,7 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/text_24dp">
+        android:paddingTop="@dimen/basic_16dp"
+        android:paddingBottom="@dimen/basic_16dp"
+        android:paddingLeft="@dimen/text_24dp">
 
         <TextView
             style="@style/SettingTextStyle"
