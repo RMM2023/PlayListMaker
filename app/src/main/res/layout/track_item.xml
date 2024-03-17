@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/track_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="10dp">
+
+    <ImageView
+        android:id="@+id/track_image"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/placeholder"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/track_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Smells Like Teen Spirit"
+                android:textSize="@dimen/basic_16dp"
+                android:fontFamily="@font/ys_display_regular"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp">
+
+                <TextView
+                    android:id="@+id/track_artist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nirvana"
+                    android:textSize="13dp"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="#AEAFB4"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ellipse_1"
+                    android:layout_gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/track_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="#AEAFB4"
+                    android:textSize="13dp"
+                    android:text="5:01"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/track_button"
+            android:layout_width="8dp"
+            android:layout_height="18dp"
+            android:background="@drawable/arrowforward"
+            android:layout_gravity="center_vertical|end"/>
+
+    </FrameLayout>
+
+</LinearLayout>
