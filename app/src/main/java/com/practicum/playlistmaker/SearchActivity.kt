@@ -13,8 +13,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
 
 class SearchActivity : AppCompatActivity() {
+    lateinit var trackRecycler : RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -79,6 +83,8 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         searchEditText.addTextChangedListener(simpleTextWatcher)
+        trackRecycler.adapter = TrackAdapter(trackList)
+        trackRecycler.layoutManager = LinearLayoutManager(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
