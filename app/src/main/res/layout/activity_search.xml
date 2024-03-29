@@ -58,6 +58,7 @@
 
     </FrameLayout>
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/track_recycler"
         android:layout_width="match_parent"
         android:layout_height="77dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
