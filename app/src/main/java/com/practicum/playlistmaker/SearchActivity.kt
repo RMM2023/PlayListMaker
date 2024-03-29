@@ -15,7 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
+import com.practicum.playlistmaker.R
 
 class SearchActivity : AppCompatActivity() {
     lateinit var trackRecycler : RecyclerView

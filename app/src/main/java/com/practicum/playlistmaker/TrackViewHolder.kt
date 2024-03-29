@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.R
+import com.practicum.playlistmaker.R
 
 class TrackViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
     val trackImage = itemView.findViewById<ImageView>(R.id.track_image)
