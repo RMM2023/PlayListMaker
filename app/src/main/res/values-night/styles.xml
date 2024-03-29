@@ -41,7 +41,7 @@
     </style>
     <style name="SearchButtonStyle">
         <item name="iconTint">@color/white</item>
-        <item name="android:backgroundTint">@color/black</item>
+        <item name="android:backgroundTint">@color/yp_black</item>
         <item name="android:drawableTint">@color/white</item>
     </style>
     <style name="EditTextStyle">
@@ -49,5 +49,21 @@
         <item name="android:textColorHint">@color/black</item>
         <item name="android:backgroundTint">@color/white</item>
         <item name="drawableTint">@color/black</item>
+    </style>
+
+    <style name="TrackPrimary">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TrackSecondary">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">13dp</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TitleText">
+        <item name="android:textColor">@color/white</item>
     </style>
 </resources>
