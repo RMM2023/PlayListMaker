@@ -11,6 +11,7 @@
         android:id="@+id/track_image"
         android:layout_width="45dp"
         android:layout_height="45dp"
+        android:layout_gravity="center_vertical"
         android:src="@drawable/placeholder"/>
     <FrameLayout
         android:layout_width="match_parent"
