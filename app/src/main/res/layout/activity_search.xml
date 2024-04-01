@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity"
+    tools:context="com.practicum.playlistmaker.SearchActivity"
     android:orientation="vertical"
     android:layout_margin="5dp"
     android:background="?attr/colorSecondary">
@@ -14,47 +14,55 @@
         android:layout_height="56dp"
         android:orientation="horizontal"
         android:layout_margin="5dp">
-            <Button
-                android:id="@+id/searchBackButton"
-                style="@style/SearchButtonStyle"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                app:icon="@drawable/arrow_left"
-                android:paddingLeft="@dimen/basic_16dp"
-                android:paddingTop="10dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings"
-                android:textSize="22sp"
-                android:fontFamily="@font/ys_display_medium"
-                android:textFontWeight="500"
-                android:layout_gravity="center_vertical"
-                android:paddingStart="10dp"/>
+        <Button
+            android:id="@+id/searchBackButton"
+            style="@style/SearchButtonStyle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:icon="@drawable/arrow_left"
+            android:paddingLeft="@dimen/basic_16dp"
+            android:paddingTop="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:textSize="22sp"
+            android:fontFamily="@font/ys_display_medium"
+            android:textFontWeight="500"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="10dp"
+            style="@style/TitleText"/>
     </LinearLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/basic_16dp">
-            <EditText
-                android:id="@+id/searchEditText"
-                style="@style/EditTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/search"
-                android:inputType="text"
-                android:background="@drawable/backg"
-                android:drawableStart="@drawable/search"
-                android:drawablePadding="12dp"
-                android:paddingLeft="10dp"/>
-            <ImageView
-                android:id="@+id/searchClearButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/clear_icon"
-                android:layout_gravity="center_vertical|end"
-                android:paddingEnd="12dp"
-                android:visibility="gone"/>
+        <EditText
+            android:id="@+id/searchEditText"
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:background="@drawable/backg"
+            android:drawableStart="@drawable/search"
+            android:drawablePadding="12dp"
+            android:paddingLeft="10dp"/>
+        <ImageView
+            android:id="@+id/searchClearButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/clear_icon"
+            android:layout_gravity="center_vertical|end"
+            android:paddingEnd="12dp"
+            android:visibility="gone"/>
 
     </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/track_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/track_item"
+        android:layout_marginTop="10dp"/>
 </LinearLayout>
