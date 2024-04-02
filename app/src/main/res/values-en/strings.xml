@@ -8,4 +8,8 @@
     <string name="share">Share the App</string>
     <string name="support">Support</string>
     <string name="agreement">User Agreement</string>
+    <string name="connection_error">Connection error</string>
+    <string name="load_fail">Loading failed. Check Your Internet connection</string>
+    <string name="update">Update</string>
+    <string name="nothing_found">Nothing Found</string>
 </resources>
