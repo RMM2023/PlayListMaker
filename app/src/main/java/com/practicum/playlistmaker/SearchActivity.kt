@@ -5,67 +5,69 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.Layout
 import android.text.TextWatcher
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
     lateinit var trackRecycler : RecyclerView
+    lateinit var notFoundLayout : LinearLayout
+    lateinit var notConnectedLayout : LinearLayout
+    lateinit var searchEditText : EditText
+    lateinit var adapter : TrackAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         trackRecycler = findViewById(R.id.track_recycler)
 
-        val trackList = mutableListOf<Track>()
-        trackList.add(Track(
-            "Smells Like Teen Spirit",
-            "Nirvana",
-            "5:01",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"
-        ))
-        trackList.add(Track(
-            "Billie Jean",
-            "Michael Jackson",
-            "4:35",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"
-        ))
-        trackList.add(Track(
-            "Stayin' Alive",
-            "Bee Gees",
-            "4:10",
-            "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"
-        ))
-        trackList.add(Track(
-            "Whole Lotta Love",
-            "Led Zeppelin",
-            "5:33",
-            "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"
-        ))
-        trackList.add(Track(
-            "Sweet Child O'Mine",
-            "Guns N' Roses",
-            "5:03",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg "
-        ))
-
-        val searchEditText = findViewById<EditText>(R.id.searchEditText)
+        val updateButton = findViewById<Button>(R.id.update_button)
+        searchEditText = findViewById(R.id.searchEditText)
         val searchClearButton = findViewById<ImageView>(R.id.searchClearButton)
         val searchBackButton = findViewById<Button>(R.id.searchBackButton)
+        notFoundLayout = findViewById(R.id.Not_found_layout)
+        notConnectedLayout = findViewById(R.id.Not_connected_layout)
+
         searchBackButton.setOnClickListener{
             finish()
+        }
+        updateButton.setOnClickListener{
+            onUpdate()
         }
         searchClearButton.setOnClickListener{
             searchEditText.setText("")
             hideKeyboard()
+            searchEditText.clearFocus()
+            adapter.clearList()
+            notConnectedLayoutVis(false)
+            notConnectedLayoutVis(false)
         }
+
+        searchEditText.setOnEditorActionListener {_, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                onSearch(searchEditText.text.toString())
+                true
+            } else {
+                false
+            }
+        }
+
         val simpleTextWatcher = object:TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -84,7 +86,8 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         searchEditText.addTextChangedListener(simpleTextWatcher)
-        trackRecycler.adapter = TrackAdapter(trackList)
+        adapter = TrackAdapter()
+        trackRecycler.adapter = adapter
         trackRecycler.layoutManager = LinearLayoutManager(this)
     }
 
@@ -103,5 +106,69 @@ class SearchActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
+    fun notFoundLayoutVis(vis : Boolean){
+        if (vis == true){
+            notFoundLayout.visibility = View.VISIBLE
+        }
+        else{
+            notFoundLayout.visibility = View.GONE
+        }
+    }
+    fun notConnectedLayoutVis(vis : Boolean){
+        if (vis == true){
+            notConnectedLayout.visibility = View.VISIBLE
+        }
+        else{
+            notConnectedLayout.visibility = View.GONE
+        }
+    }
+
+    fun onUpdate(){
+        notFoundLayoutVis(false)
+        notConnectedLayoutVis(false)
+        onSearch(searchEditText.text.toString())
+    }
+    fun onSearch(query : String){
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://itunes.apple.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ITunesApiService :: class.java)
+        val call = service.search(query)
+
+        call.enqueue(object : Callback<SearchResponse>{
+            override fun onResponse(
+                call: Call<SearchResponse>,
+                response: Response<SearchResponse>
+            ) {
+                if (response.isSuccessful){
+                    val searchResponse = response.body()
+                    searchResponse?.let {
+                        if (it.resultCount > 0){
+                            adapter.updateList(it.results)
+                            trackRecycler.scrollToPosition(0)
+                        }
+                        else{
+                            adapter.clearList()
+                            notConnectedLayoutVis(false)
+                            notFoundLayoutVis(true)
+                        }
+                    }
+                }
+                else{
+                    notFoundLayoutVis(false)
+                    notConnectedLayoutVis(true)
+                    adapter.clearList()
+                }
+            }
+
+            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                adapter.clearList()
+                notConnectedLayoutVis(true)
+                notFoundLayoutVis(false)
+            }
+        })
     }
 }
