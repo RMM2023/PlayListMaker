@@ -30,9 +30,10 @@
             android:textAllCaps="false"
             android:textSize="16sp" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/theme_switch"
             style="@style/SwitchStyle"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+            tools:ignore="UseSwitchCompatOrMaterialXml"/>
     </LinearLayout>
 
     <Button

@@ -2,6 +2,7 @@ package com.practicum.playlistmaker
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -27,15 +28,66 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
+    companion object{
+        const val PREF_NAME = "pref_name"
+    }
+
     lateinit var trackRecycler : RecyclerView
     lateinit var notFoundLayout : LinearLayout
     lateinit var notConnectedLayout : LinearLayout
+    lateinit var searchHistoryLayout: LinearLayout
+    lateinit var searchHistoryRecyclerView: RecyclerView
+    private var sharedPreferencesHistory: SharedPreferences? = null
+    private lateinit var searchHistoryClass: SearchHistoryHelper
+    var trackList = mutableListOf<Track>()
+    var historyTrackList = mutableListOf<Track>()
+
     lateinit var searchEditText : EditText
     lateinit var adapter : TrackAdapter
+
+    lateinit var historyAdapter: TrackAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_search)
         trackRecycler = findViewById(R.id.track_recycler)
+        adapter = TrackAdapter(trackList){
+                track -> searchHistoryClass.add(track)
+            historyTrackList.add(track)
+            historyAdapter.updateList(historyTrackList)
+        }
+        trackRecycler.adapter = adapter
+        trackRecycler.layoutManager = LinearLayoutManager(this)
+
+        val clearHistoryButton = findViewById<Button>(R.id.history_clear_button)
+        clearHistoryButton.setOnClickListener {
+            searchHistoryClass.clear()
+            historyTrackList.clear()
+            historyAdapter.updateList(historyTrackList)
+            searchHistoryLayoutVis(false)
+            trackRecyclerViewVis(true)
+        }
+
+        //БЛОК НАЧАЛЬНОГО ЗАПОЛНЕНИЯ ИСТОРИИ
+        sharedPreferencesHistory = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+        searchHistoryClass = SearchHistoryHelper(sharedPreferencesHistory!!)
+        searchHistoryLayout = findViewById(R.id.search_history_layout)
+        searchHistoryRecyclerView = findViewById(R.id.search_history_recycle_view)
+        historyAdapter = TrackAdapter(historyTrackList){
+            //Нажатие на трек в истории ничего не делает
+        }
+        searchHistoryRecyclerView.adapter = historyAdapter
+        searchHistoryRecyclerView.layoutManager = LinearLayoutManager(this);
+        readHistory()
+        if(historyAdapter.trackList.isNotEmpty()){
+            searchHistoryLayoutVis(true)
+            trackRecyclerViewVis(false)
+        } else {
+            trackRecyclerViewVis(true)
+        }
+
+
+
 
         val updateButton = findViewById<Button>(R.id.update_button)
         searchEditText = findViewById(R.id.searchEditText)
@@ -57,10 +109,13 @@ class SearchActivity : AppCompatActivity() {
             adapter.clearList()
             notConnectedLayoutVis(false)
             notConnectedLayoutVis(false)
+            searchHistoryLayoutVis(true)
         }
 
         searchEditText.setOnEditorActionListener {_, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                searchHistoryLayoutVis(false)
+                trackRecyclerViewVis(true)
                 onSearch(searchEditText.text.toString())
                 true
             } else {
@@ -76,6 +131,9 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.toString().isEmpty()){
                     searchClearButton.visibility=GONE
+                    trackRecyclerViewVis(false)
+                    searchHistoryLayoutVis(true)
+                    hideKeyboard()
                 }else{
                     searchClearButton.visibility= VISIBLE
                 }
@@ -86,9 +144,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         searchEditText.addTextChangedListener(simpleTextWatcher)
-        adapter = TrackAdapter()
-        trackRecycler.adapter = adapter
-        trackRecycler.layoutManager = LinearLayoutManager(this)
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -124,6 +180,27 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    fun searchHistoryLayoutVis(vis: Boolean){
+        if (vis == true){
+            searchHistoryLayout.visibility = View.VISIBLE
+        } else{
+            searchHistoryLayout.visibility = View.GONE
+        }
+    }
+
+    fun trackRecyclerViewVis(vis: Boolean){
+        if(vis == true){
+            trackRecycler.visibility = View.VISIBLE
+        } else{
+            trackRecycler.visibility = View.GONE
+        }
+    }
+
+    fun readHistory() {
+        historyTrackList = searchHistoryClass.read().toMutableList()
+        historyAdapter.updateList(historyTrackList)
+    }
+
     fun onUpdate(){
         notFoundLayoutVis(false)
         notConnectedLayoutVis(false)
@@ -147,7 +224,8 @@ class SearchActivity : AppCompatActivity() {
                     val searchResponse = response.body()
                     searchResponse?.let {
                         if (it.resultCount > 0){
-                            adapter.updateList(it.results)
+                            trackList = it.results
+                            adapter.updateList(trackList)
                             trackRecycler.scrollToPosition(0)
                         }
                         else{

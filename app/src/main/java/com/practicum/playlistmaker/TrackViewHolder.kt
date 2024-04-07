@@ -30,8 +30,5 @@ class TrackViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
         trackTitle.text = track.trackName
         trackArtist.text = track.artistName
         trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        itemView.setOnClickListener{
-            Toast.makeText(itemView.context, "Не реализовано", Toast.LENGTH_SHORT).show()
-        }
     }
 }

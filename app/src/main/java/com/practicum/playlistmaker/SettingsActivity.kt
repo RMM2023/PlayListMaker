@@ -5,13 +5,26 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.practicum.playlistmaker.R
 
+const val IS_DARK_THEME = "dark_theme_on"
+const val PREF_STATUS = "shared_preferences_status"
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        val themeSwitch = findViewById<SwitchCompat>(R.id.theme_switch)
+        themeSwitch.isChecked = (applicationContext as App).isDarkTheme
+        themeSwitch.setOnCheckedChangeListener{
+            _, isChecked ->
+            (applicationContext as App).themeToggle(isChecked)
+            val sPref = getSharedPreferences(IS_DARK_THEME, MODE_PRIVATE)
+            sPref.edit()
+                .putBoolean(PREF_STATUS, isChecked)
+                .apply()
+        }
         val backButton = findViewById<Button>(R.id.button_back)
         backButton.setOnClickListener {
             finish()
