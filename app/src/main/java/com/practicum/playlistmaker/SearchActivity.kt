@@ -109,7 +109,12 @@ class SearchActivity : AppCompatActivity() {
             adapter.clearList()
             notConnectedLayoutVis(false)
             notConnectedLayoutVis(false)
-            searchHistoryLayoutVis(true)
+            readHistory()
+            if (historyTrackList.isEmpty()){
+                searchHistoryLayoutVis(false)
+            }else{
+                searchHistoryLayoutVis(true)
+            }
         }
 
         searchEditText.setOnEditorActionListener {_, actionId, _ ->
@@ -132,7 +137,12 @@ class SearchActivity : AppCompatActivity() {
                 if (s.toString().isEmpty()){
                     searchClearButton.visibility=GONE
                     trackRecyclerViewVis(false)
-                    searchHistoryLayoutVis(true)
+                    readHistory()
+                    if (historyTrackList.isEmpty()){
+                        searchHistoryLayoutVis(false)
+                    }else{
+                        searchHistoryLayoutVis(true)
+                    }
                     hideKeyboard()
                 }else{
                     searchClearButton.visibility= VISIBLE

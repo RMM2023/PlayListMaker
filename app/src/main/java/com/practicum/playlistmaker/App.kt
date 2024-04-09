@@ -9,6 +9,7 @@ class App : Application() {
         super.onCreate()
         val sPref = getSharedPreferences(IS_DARK_THEME, MODE_PRIVATE)
         isDarkTheme = sPref.getBoolean(PREF_STATUS, false)
+        themeToggle(isDarkTheme)
     }
     fun themeToggle(isDarkTheme : Boolean){
         AppCompatDelegate.setDefaultNightMode(

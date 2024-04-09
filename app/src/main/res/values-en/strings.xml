@@ -12,4 +12,6 @@
     <string name="load_fail">Loading failed. Check Your Internet connection</string>
     <string name="update">Update</string>
     <string name="nothing_found">Nothing Found</string>
+    <string name="searched">You have searched</string>
+    <string name="clear_history">Clear History</string>
 </resources>
