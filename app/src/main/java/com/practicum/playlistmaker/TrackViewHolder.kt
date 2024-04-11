@@ -18,7 +18,8 @@ class TrackViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
 
     fun bind(track: Track){
         if (track.artworkUrl100.isNotEmpty()){
-            Glide.with(trackImage).load(track.artworkUrl100)
+            Glide.with(trackImage)
+                .load(track.artworkUrl100)
                 .centerInside()
                 .transform(RoundedCorners(4))
                 .placeholder(R.drawable.placeholder)

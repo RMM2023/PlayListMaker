@@ -108,7 +108,7 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.clearFocus()
             adapter.clearList()
             notConnectedLayoutVis(false)
-            notConnectedLayoutVis(false)
+            notFoundLayoutVis(false)
             readHistory()
             if (historyTrackList.isEmpty()){
                 searchHistoryLayoutVis(false)
@@ -137,6 +137,8 @@ class SearchActivity : AppCompatActivity() {
                 if (s.toString().isEmpty()){
                     searchClearButton.visibility=GONE
                     trackRecyclerViewVis(false)
+                    notConnectedLayoutVis(false)
+                    notFoundLayoutVis(false)
                     readHistory()
                     if (historyTrackList.isEmpty()){
                         searchHistoryLayoutVis(false)
