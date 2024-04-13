@@ -14,4 +14,9 @@
     <string name="nothing_found">Nothing Found</string>
     <string name="searched">You have searched</string>
     <string name="clear_history">Clear History</string>
+    <string name="pl_country">Country</string>
+    <string name="pl_genge">Genge</string>
+    <string name="pl_year">Year</string>
+    <string name="pl_album">Album</string>
+    <string name="pl_duration">Duration</string>
 </resources>

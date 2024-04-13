@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">PlayListMaker</string>
-        <string name="title" translatable="false">PlayListMaker</string>
+    <string name="title" translatable="false">PlayListMaker</string>
     <string name="search">Поиск</string>
     <string name="media">Медиатека</string>
     <string name="settings">Настройки</string>
@@ -19,5 +19,10 @@
     <string name="nothing_found">Ничего не нашлось</string>
     <string name="searched">Вы искали</string>
     <string name="clear_history">Очистить историю</string>
+    <string name="pl_country">Страна</string>
+    <string name="pl_genge">Жанр</string>
+    <string name="pl_year">Год</string>
+    <string name="pl_album">Альбом</string>
+    <string name="pl_duration">Длительность</string>
 
 </resources>

@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-
+const val CURRENT_TRACK = "current_track"
 class TrackAdapter(var trackList: MutableList<Track>, private var itemClickListener: (Track) -> Unit):RecyclerView.Adapter<TrackViewHolder>() {
-
 
     fun updateList(trackList: MutableList<Track>){
         this.trackList = trackList
