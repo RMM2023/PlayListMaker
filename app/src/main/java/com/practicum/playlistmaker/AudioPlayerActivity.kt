@@ -40,6 +40,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackYear = findViewById<TextView>(R.id.track_year)
         val albumName = findViewById<TextView>(R.id.album_name)
 
+        track = getTrack(intent.getStringExtra(CURRENT_TRACK))
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackGenre.text = track.primaryGenreName
@@ -61,7 +62,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             .into(trackCover)
 
 
-        track = getTrack(intent.getStringExtra(CURRENT_TRACK))
+
         backButton.setOnClickListener {
             finish()
         }

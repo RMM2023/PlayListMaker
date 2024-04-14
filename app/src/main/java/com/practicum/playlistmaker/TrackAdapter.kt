@@ -1,9 +1,11 @@
 package com.practicum.playlistmaker
 
+import android.content.Intent
 import android.text.Layout
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 const val CURRENT_TRACK = "current_track"
 class TrackAdapter(var trackList: MutableList<Track>, private var itemClickListener: (Track) -> Unit):RecyclerView.Adapter<TrackViewHolder>() {
@@ -29,6 +31,12 @@ class TrackAdapter(var trackList: MutableList<Track>, private var itemClickListe
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener{
             itemClickListener(trackList[position])
+            openAudioPlayer(holder, trackList[position])
         }
+    }
+    private fun openAudioPlayer(holder: TrackViewHolder, track: Track) {
+        val intent = Intent(holder.itemView.context, AudioPlayerActivity::class.java)
+        intent.putExtra(CURRENT_TRACK, Gson().toJson(track))
+        holder.itemView.context.startActivity(intent)
     }
 }
