@@ -24,5 +24,8 @@
     <string name="pl_year">Год</string>
     <string name="pl_album">Альбом</string>
     <string name="pl_duration">Длительность</string>
+    <string name="play_clicked_toast">Кнопка Play нажата</string>
+    <string name="like_clicked_toast">%1$s добавлена в favorite</string>
+    <string name="add_clicked_toast">%1$s Добавлен в Плейлист</string>
 
 </resources>

@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingVertical="10dp"
-    android:paddingHorizontal="10dp">
+    android:padding="12dp">
 
     <ImageView
         android:id="@+id/track_image"

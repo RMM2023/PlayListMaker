@@ -2,6 +2,7 @@ package com.practicum.playlistmaker
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,6 +20,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -55,6 +57,7 @@ class SearchActivity : AppCompatActivity() {
                 track -> searchHistoryClass.add(track)
             historyTrackList.add(track)
             historyAdapter.updateList(historyTrackList)
+            openAudioPlayer(track)
         }
         trackRecycler.adapter = adapter
         trackRecycler.layoutManager = LinearLayoutManager(this)
@@ -73,8 +76,8 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryClass = SearchHistoryHelper(sharedPreferencesHistory!!)
         searchHistoryLayout = findViewById(R.id.search_history_layout)
         searchHistoryRecyclerView = findViewById(R.id.search_history_recycle_view)
-        historyAdapter = TrackAdapter(historyTrackList){
-            //Нажатие на трек в истории ничего не делает
+        historyAdapter = TrackAdapter(historyTrackList){track ->
+            openAudioPlayer(track)
         }
         searchHistoryRecyclerView.adapter = historyAdapter
         searchHistoryRecyclerView.layoutManager = LinearLayoutManager(this);
@@ -260,5 +263,10 @@ class SearchActivity : AppCompatActivity() {
                 notFoundLayoutVis(false)
             }
         })
+    }
+    private fun openAudioPlayer(track: Track) {
+        val intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra(CURRENT_TRACK, Gson().toJson(track))
+        startActivity(intent)
     }
 }

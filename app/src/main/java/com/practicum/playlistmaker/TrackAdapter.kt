@@ -31,12 +31,6 @@ class TrackAdapter(var trackList: MutableList<Track>, private var itemClickListe
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener{
             itemClickListener(trackList[position])
-            openAudioPlayer(holder, trackList[position])
         }
-    }
-    private fun openAudioPlayer(holder: TrackViewHolder, track: Track) {
-        val intent = Intent(holder.itemView.context, AudioPlayerActivity::class.java)
-        intent.putExtra(CURRENT_TRACK, Gson().toJson(track))
-        holder.itemView.context.startActivity(intent)
     }
 }

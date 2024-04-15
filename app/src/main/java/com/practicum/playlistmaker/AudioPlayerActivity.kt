@@ -33,7 +33,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackCover = findViewById<ImageView>(R.id.player_cover)
         val trackName = findViewById<TextView>(R.id.track_name)
         val artistName = findViewById<TextView>(R.id.artist_name)
-        val trackLenght = findViewById<TextView>(R.id.track_time)
+        val trackLenght = findViewById<TextView>(R.id.track_length)
         val trackGenre = findViewById<TextView>(R.id.track_genre)
         val playerTime = findViewById<TextView>(R.id.player_time)
         val trackCountry = findViewById<TextView>(R.id.track_country)
@@ -68,16 +68,18 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         playPause.setOnClickListener {
-            Toast.makeText(this, "Кнопка Play нажата", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.play_clicked_toast), Toast.LENGTH_SHORT).show()
         }
 
         likeButton.setOnClickListener {
-            Toast.makeText(this, "${track.trackName} добавлена в favorite", Toast.LENGTH_SHORT)
+            Toast.makeText(this,
+                getString(R.string.like_clicked_toast, track.trackName), Toast.LENGTH_SHORT)
                 .show()
         }
 
         addToPlayList.setOnClickListener {
-            Toast.makeText(this, "${track.trackName} Добавлен в Плейлист", Toast.LENGTH_SHORT)
+            Toast.makeText(this,
+                getString(R.string.add_clicked_toast, track.trackName), Toast.LENGTH_SHORT)
                 .show()
         }
     }
