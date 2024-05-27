@@ -1,13 +1,14 @@
 package com.practicum.playlistmaker
 
+import android.content.Intent
 import android.text.Layout
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.practicum.playlistmaker.R
-
-class TrackAdapter():RecyclerView.Adapter<TrackViewHolder>() {
-    var trackList:MutableList<Track> = mutableListOf()
+const val CURRENT_TRACK = "current_track"
+class TrackAdapter(var trackList: MutableList<Track>, private var itemClickListener: (Track) -> Unit):RecyclerView.Adapter<TrackViewHolder>() {
 
     fun updateList(trackList: MutableList<Track>){
         this.trackList = trackList
@@ -28,6 +29,8 @@ class TrackAdapter():RecyclerView.Adapter<TrackViewHolder>() {
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
+        holder.itemView.setOnClickListener{
+            itemClickListener(trackList[position])
+        }
     }
-
 }

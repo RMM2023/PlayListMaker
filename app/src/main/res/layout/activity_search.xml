@@ -64,7 +64,8 @@
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/track_item"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:visibility="gone"/>
     <LinearLayout
         android:id="@+id/Not_found_layout"
         android:layout_width="wrap_content"
@@ -122,4 +123,43 @@
             style="@style/UpdateButtonStyle"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/search_history_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:textSize="22sp"
+            android:fontFamily="@font/ys_display_medium"
+            style="@style/TitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="12dp"
+            android:text="@string/searched"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_history_recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            android:layout_weight="1"
+            tools:listitem="@layout/track_item" />
+
+        <Button
+            android:id="@+id/history_clear_button"
+            style="@style/UpdateButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="@string/clear_history"
+            app:cornerRadius="54dp" />
+    </LinearLayout>
+
 </LinearLayout>

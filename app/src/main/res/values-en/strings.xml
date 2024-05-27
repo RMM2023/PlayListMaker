@@ -12,4 +12,14 @@
     <string name="load_fail">Loading failed. Check Your Internet connection</string>
     <string name="update">Update</string>
     <string name="nothing_found">Nothing Found</string>
+    <string name="searched">You have searched</string>
+    <string name="clear_history">Clear History</string>
+    <string name="pl_country">Country</string>
+    <string name="pl_genge">Genge</string>
+    <string name="pl_year">Year</string>
+    <string name="pl_album">Album</string>
+    <string name="pl_duration">Duration</string>
+    <string name="play_clicked_toast">Кнопка Play нажата</string>
+    <string name="like_clicked_toast">%1$s добавлена в favorite</string>
+    <string name="add_clicked_toast">%1$s Добавлен в Плейлист</string>
 </resources>

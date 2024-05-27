@@ -18,7 +18,8 @@ class TrackViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
 
     fun bind(track: Track){
         if (track.artworkUrl100.isNotEmpty()){
-            Glide.with(trackImage).load(track.artworkUrl100)
+            Glide.with(trackImage)
+                .load(track.artworkUrl100)
                 .centerInside()
                 .transform(RoundedCorners(4))
                 .placeholder(R.drawable.placeholder)
@@ -30,8 +31,5 @@ class TrackViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
         trackTitle.text = track.trackName
         trackArtist.text = track.artistName
         trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        itemView.setOnClickListener{
-            Toast.makeText(itemView.context, "Не реализовано", Toast.LENGTH_SHORT).show()
-        }
     }
 }
