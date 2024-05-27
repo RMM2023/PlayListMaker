@@ -108,6 +108,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
     <style name="PlayButton">
-        <item name="android:src">@drawable/play_night</item>
+        <item name="android:src">@drawable/pause</item>
     </style>
 </resources>
