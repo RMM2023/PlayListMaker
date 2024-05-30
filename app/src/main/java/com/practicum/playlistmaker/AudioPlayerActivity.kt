@@ -27,6 +27,13 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var playPauseButton: ImageView
     private lateinit var playerTime: TextView
 
+    private val debounceInterval = 1000L
+    private var lastClickTime = 0L
+    private val debounceHandler = Handler(Looper.getMainLooper())
+    private val debounceRunnable = Runnable {
+        lastClickTime = 0L
+    }
+
     private fun getTrack(json: String?): Track? {
         return try {
             Gson().fromJson(json, Track::class.java)
@@ -67,8 +74,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         trackGenre.text = track.primaryGenreName
         albumName.text = track.collectionName
         trackCountry.text = track.country
-        trackLength.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        trackYear.text = LocalDateTime.parse(track.releaseDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")).year.toString()
+        trackLength.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        trackYear.text = LocalDateTime.parse(
+            track.releaseDate,
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        ).year.toString()
 
         Glide.with(trackCover)
             .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
@@ -83,14 +94,26 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         backButton.setOnClickListener { finish() }
 
-        playPauseButton.setOnClickListener { togglePlayPause() }
+        playPauseButton.setOnClickListener { handleDebouncedClick { togglePlayPause() } }
 
         likeButton.setOnClickListener {
-            Toast.makeText(this, getString(R.string.like_clicked_toast, track.trackName), Toast.LENGTH_SHORT).show()
+            handleDebouncedClick {
+                Toast.makeText(
+                    this,
+                    getString(R.string.like_clicked_toast, track.trackName),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         addToPlayList.setOnClickListener {
-            Toast.makeText(this, getString(R.string.add_clicked_toast, track.trackName), Toast.LENGTH_SHORT).show()
+            handleDebouncedClick {
+                Toast.makeText(
+                    this,
+                    getString(R.string.add_clicked_toast, track.trackName),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -136,5 +159,15 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onDestroy()
         mediaPlayer.release()
         handler.removeCallbacks(updateTimeTask)
+        debounceHandler.removeCallbacks(debounceRunnable)
+    }
+    private fun handleDebouncedClick(action:()->Unit){
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime > debounceInterval){
+            action()
+            lastClickTime = currentTime
+            debounceHandler.removeCallbacks(debounceRunnable)
+            debounceHandler.postDelayed(debounceRunnable, debounceInterval)
+        }
     }
 }
