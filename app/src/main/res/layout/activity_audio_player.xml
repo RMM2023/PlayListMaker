@@ -5,7 +5,7 @@
     style="@style/PlayerStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AudioPlayerActivity"
+    tools:context=".presentation.ui.UiAudioPlayerActivity.AudioPlayerActivity"
     tools:ignore="ContentDescription">
 
     <androidx.constraintlayout.widget.Guideline

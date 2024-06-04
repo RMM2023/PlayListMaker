@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.UiAudioPlayerActivity
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -10,6 +10,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.practicum.playlistmaker.presentation.ui.UiSearchActivity.CURRENT_TRACK
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.data.AudioPlayerImplementation
+import com.practicum.playlistmaker.data.Track
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -23,6 +27,8 @@ class AudioPlayerActivity : AppCompatActivity() {
     private var isPlaying = false
 
     private lateinit var binding: ActivityAudioPlayerBinding
+
+    val audioPlayer = AudioPlayerImplementation()
 
     private val debounceInterval = 1000L
     private var lastClickTime = 0L
@@ -73,11 +79,20 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         handler = Handler(Looper.getMainLooper())
 
-        setupMediaPlayer()
+        audioPlayer.setupMediaPlayer(binding, track)
+        handler.removeCallbacks(updateTimeTask)
 
         binding.buttonBackPlayer.setOnClickListener { finish() }
 
-        binding.buttonPlay.setOnClickListener { handleDebouncedClick { togglePlayPause() } }
+        binding.buttonPlay.setOnClickListener { handleDebouncedClick {
+            audioPlayer.togglePlayPause(binding, isPlaying)
+            if (isPlaying){
+                handler.removeCallbacks(updateTimeTask)
+            }else{
+                handler.post(updateTimeTask)
+            }
+            isPlaying = !isPlaying
+        } }
 
         binding.buttonLike.setOnClickListener {
             handleDebouncedClick {
@@ -100,34 +115,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupMediaPlayer() {
-        mediaPlayer = MediaPlayer().apply {
-            setDataSource(track.previewUrl)
-            setOnPreparedListener {
-                binding.playerTime.text = "00:00"
-                binding.buttonPlay.setImageResource(R.drawable.play)
-            }
-            prepareAsync()
-            setOnCompletionListener {
-                binding.buttonPlay.setImageResource(R.drawable.play)
-                binding.playerTime.text = "00:00"
-                handler.removeCallbacks(updateTimeTask)
-            }
-        }
-    }
 
-    private fun togglePlayPause() {
-        if (isPlaying) {
-            mediaPlayer.pause()
-            binding.buttonPlay.setImageResource(R.drawable.play)
-            handler.removeCallbacks(updateTimeTask)
-        } else {
-            mediaPlayer.start()
-            binding.buttonPlay.setImageResource(R.drawable.pause)
-            handler.post(updateTimeTask)
-        }
-        isPlaying = !isPlaying
-    }
 
     private val updateTimeTask: Runnable = object : Runnable {
         override fun run() {

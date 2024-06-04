@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.data
 
 data class Track(
     val trackId : String, //Идентификатор
