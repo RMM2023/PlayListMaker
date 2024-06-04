@@ -7,17 +7,19 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.ActivityMainBinding
+import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 
 const val IS_DARK_THEME = "dark_theme_on"
 const val PREF_STATUS = "shared_preferences_status"
 class SettingsActivity : AppCompatActivity() {
+    lateinit var binding: ActivitySettingsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-
-        val themeSwitch = findViewById<SwitchCompat>(R.id.theme_switch)
-        themeSwitch.isChecked = (applicationContext as App).isDarkTheme
-        themeSwitch.setOnCheckedChangeListener{
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.themeSwitch.isChecked = (applicationContext as App).isDarkTheme
+        binding.themeSwitch.setOnCheckedChangeListener{
             _, isChecked ->
             (applicationContext as App).themeToggle(isChecked)
             val sPref = getSharedPreferences(IS_DARK_THEME, MODE_PRIVATE)
@@ -25,12 +27,11 @@ class SettingsActivity : AppCompatActivity() {
                 .putBoolean(PREF_STATUS, isChecked)
                 .apply()
         }
-        val backButton = findViewById<Button>(R.id.button_back)
-        backButton.setOnClickListener {
+
+        binding.buttonBack.setOnClickListener {
             finish()
         }
-        val shareButton = findViewById<Button>(R.id.share_button)
-        shareButton.setOnClickListener{
+        binding.shareButton.setOnClickListener{
             val shareIntent = Intent()
             shareIntent.apply {
                 action = Intent.ACTION_SEND
@@ -41,8 +42,7 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(Intent.createChooser(this, shareText))
             }
         }
-        val supportButton = findViewById<Button>(R.id.support_button)
-        supportButton.setOnClickListener{
+        binding.supportButton.setOnClickListener{
             val supportIntent = Intent()
             supportIntent.apply {
                 action = Intent.ACTION_SENDTO
@@ -53,8 +53,7 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(this)
             }
         }
-        val agreeButton = findViewById<Button>(R.id.agree_button)
-        agreeButton.setOnClickListener{
+        binding.agreeButton.setOnClickListener{
             val agreeIntent  = Intent()
             agreeIntent .apply {
                 action = Intent.ACTION_VIEW

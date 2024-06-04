@@ -4,15 +4,13 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -24,8 +22,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var handler: Handler
     private var isPlaying = false
 
-    private lateinit var playPauseButton: ImageView
-    private lateinit var playerTime: TextView
+    private lateinit var binding: ActivityAudioPlayerBinding
 
     private val debounceInterval = 1000L
     private var lastClickTime = 0L
@@ -45,22 +42,8 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_audio_player)
-
-        playerTime = findViewById(R.id.player_time)
-        val backButton: Button = findViewById(R.id.button_back_player)
-        val addToPlayList: ImageView = findViewById(R.id.button_add_track)
-        playPauseButton = findViewById(R.id.button_play)
-        val likeButton: ImageView = findViewById(R.id.button_like)
-
-        val trackCover = findViewById<ImageView>(R.id.player_cover)
-        val trackName = findViewById<TextView>(R.id.track_name)
-        val artistName = findViewById<TextView>(R.id.artist_name)
-        val trackLength = findViewById<TextView>(R.id.track_length)
-        val trackGenre = findViewById<TextView>(R.id.track_genre)
-        val trackCountry = findViewById<TextView>(R.id.track_country)
-        val trackYear = findViewById<TextView>(R.id.track_year)
-        val albumName = findViewById<TextView>(R.id.album_name)
+        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val trackJson = intent.getStringExtra(CURRENT_TRACK)
         track = getTrack(trackJson) ?: run {
@@ -69,34 +52,34 @@ class AudioPlayerActivity : AppCompatActivity() {
             return
         }
 
-        trackName.text = track.trackName
-        artistName.text = track.artistName
-        trackGenre.text = track.primaryGenreName
-        albumName.text = track.collectionName
-        trackCountry.text = track.country
-        trackLength.text =
+        binding.trackName.text = track.trackName
+        binding.artistName.text = track.artistName
+        binding.trackGenre.text = track.primaryGenreName
+        binding.albumName.text = track.collectionName
+        binding.trackCountry.text = track.country
+        binding.trackLength.text =
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        trackYear.text = LocalDateTime.parse(
+        binding.trackYear.text = LocalDateTime.parse(
             track.releaseDate,
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
         ).year.toString()
 
-        Glide.with(trackCover)
+        Glide.with(binding.playerCover)
             .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
             .placeholder(R.drawable.placeholder)
             .centerCrop()
             .transform(RoundedCorners(15))
-            .into(trackCover)
+            .into(binding.playerCover)
 
         handler = Handler(Looper.getMainLooper())
 
         setupMediaPlayer()
 
-        backButton.setOnClickListener { finish() }
+        binding.buttonBackPlayer.setOnClickListener { finish() }
 
-        playPauseButton.setOnClickListener { handleDebouncedClick { togglePlayPause() } }
+        binding.buttonPlay.setOnClickListener { handleDebouncedClick { togglePlayPause() } }
 
-        likeButton.setOnClickListener {
+        binding.buttonLike.setOnClickListener {
             handleDebouncedClick {
                 Toast.makeText(
                     this,
@@ -106,7 +89,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
         }
 
-        addToPlayList.setOnClickListener {
+        binding.buttonAddTrack.setOnClickListener {
             handleDebouncedClick {
                 Toast.makeText(
                     this,
@@ -121,14 +104,13 @@ class AudioPlayerActivity : AppCompatActivity() {
         mediaPlayer = MediaPlayer().apply {
             setDataSource(track.previewUrl)
             setOnPreparedListener {
-                playerTime.text = "00:00"
-                playPauseButton.setImageResource(R.drawable.play)
+                binding.playerTime.text = "00:00"
+                binding.buttonPlay.setImageResource(R.drawable.play)
             }
             prepareAsync()
             setOnCompletionListener {
-
-                playPauseButton.setImageResource(R.drawable.play)
-                playerTime.text = "00:00"
+                binding.buttonPlay.setImageResource(R.drawable.play)
+                binding.playerTime.text = "00:00"
                 handler.removeCallbacks(updateTimeTask)
             }
         }
@@ -137,11 +119,11 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun togglePlayPause() {
         if (isPlaying) {
             mediaPlayer.pause()
-            playPauseButton.setImageResource(R.drawable.play)
+            binding.buttonPlay.setImageResource(R.drawable.play)
             handler.removeCallbacks(updateTimeTask)
         } else {
             mediaPlayer.start()
-            playPauseButton.setImageResource(R.drawable.pause)
+            binding.buttonPlay.setImageResource(R.drawable.pause)
             handler.post(updateTimeTask)
         }
         isPlaying = !isPlaying
@@ -150,7 +132,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private val updateTimeTask: Runnable = object : Runnable {
         override fun run() {
             val currentPosition = mediaPlayer.currentPosition
-            playerTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition)
+            binding.playerTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition)
             handler.postDelayed(this, 500)
         }
     }
@@ -161,9 +143,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         handler.removeCallbacks(updateTimeTask)
         debounceHandler.removeCallbacks(debounceRunnable)
     }
-    private fun handleDebouncedClick(action:()->Unit){
+
+    private fun handleDebouncedClick(action: () -> Unit) {
         val currentTime = System.currentTimeMillis()
-        if (currentTime - lastClickTime > debounceInterval){
+        if (currentTime - lastClickTime > debounceInterval) {
             action()
             lastClickTime = currentTime
             debounceHandler.removeCallbacks(debounceRunnable)
