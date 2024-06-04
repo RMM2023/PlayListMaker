@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/settings"
+            android:text="@string/search"
             android:textSize="22sp"
             android:fontFamily="@font/ys_display_medium"
             android:textFontWeight="500"
@@ -66,6 +66,22 @@
         tools:listitem="@layout/track_item"
         android:layout_marginTop="10dp"
         android:visibility="gone"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/progressBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <ProgressBar
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:indeterminateTint="@color/yp_blue"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.3"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <LinearLayout
         android:id="@+id/Not_found_layout"
         android:layout_width="wrap_content"
