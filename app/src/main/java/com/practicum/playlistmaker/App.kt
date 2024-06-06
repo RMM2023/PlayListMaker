@@ -2,6 +2,8 @@ package com.practicum.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.practicum.playlistmaker.presentation.ui.settings.IS_DARK_THEME
+import com.practicum.playlistmaker.presentation.ui.settings.PREF_STATUS
 
 class App : Application() {
     var isDarkTheme : Boolean = false
