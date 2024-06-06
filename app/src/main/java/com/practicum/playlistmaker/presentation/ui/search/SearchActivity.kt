@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation.ui.UiSearchActivity
+package com.practicum.playlistmaker.presentation.ui.search
 
 import android.content.Context
 import android.content.Intent
@@ -13,11 +13,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
-import com.practicum.playlistmaker.presentation.ui.UiAudioPlayerActivity.AudioPlayerActivity
+import com.practicum.playlistmaker.presentation.ui.player.AudioPlayerActivity
 import com.practicum.playlistmaker.data.ITunesApiService
 import com.practicum.playlistmaker.data.SearchHistoryHelper
 import com.practicum.playlistmaker.data.SearchResponse
-import com.practicum.playlistmaker.data.Track
+import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback

@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.data
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.practicum.playlistmaker.domain.models.Track
 
 
 const val PREF_KEY = "history"

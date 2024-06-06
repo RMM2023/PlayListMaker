@@ -1,9 +1,9 @@
 package com.practicum.playlistmaker.data
 
 import android.media.MediaPlayer
-import android.os.Handler
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.practicum.playlistmaker.domain.models.Track
 
 class AudioPlayerImplementation : AudioPlayerInteractor {
     lateinit var mediaPlayer : MediaPlayer

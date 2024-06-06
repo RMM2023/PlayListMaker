@@ -1,10 +1,10 @@
-package com.practicum.playlistmaker.presentation.ui.UiSearchActivity
+package com.practicum.playlistmaker.presentation.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.Track
+import com.practicum.playlistmaker.domain.models.Track
 
 const val CURRENT_TRACK = "current_track"
 class TrackAdapter(var trackList: MutableList<Track>, private var itemClickListener: (Track) -> Unit):RecyclerView.Adapter<TrackViewHolder>() {

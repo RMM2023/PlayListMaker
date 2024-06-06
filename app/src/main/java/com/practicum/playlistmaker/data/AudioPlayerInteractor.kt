@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.data
 
-import android.os.Handler
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.practicum.playlistmaker.domain.models.Track
 
 interface AudioPlayerInteractor {
     fun setupMediaPlayer(binding : ActivityAudioPlayerBinding, track: Track)
