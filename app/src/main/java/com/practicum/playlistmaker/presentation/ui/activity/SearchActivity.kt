@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.activity
 
 import android.content.Context
 import android.content.Intent
@@ -14,14 +14,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.practicum.playlistmaker.domain.model.SearchResult
+import com.practicum.playlistmaker.domain.model.Track
+import com.practicum.playlistmaker.domain.usecase.SearchTracksUseCase
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.ui.App
+import com.practicum.playlistmaker.presentation.ui.CURRENT_TRACK
+import com.practicum.playlistmaker.presentation.util.SearchHistoryHelper
+import com.practicum.playlistmaker.presentation.ui.adapter.TrackAdapter
 
 class SearchActivity : AppCompatActivity() {
-    companion object{
+    companion object {
         const val PREF_NAME = "pref_name"
     }
 
@@ -35,10 +38,15 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
 
+    // Dependency on use case
+    private lateinit var searchTracksUseCase: SearchTracksUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        searchTracksUseCase = (application as App).searchTracksUseCase
 
         adapter = TrackAdapter(trackList) { track ->
             searchHistoryClass.add(track)
@@ -172,44 +180,24 @@ class SearchActivity : AppCompatActivity() {
 
     private fun onSearch(query: String) {
         binding.progressBarLayout.visibility = View.VISIBLE
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://itunes.apple.com")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(ITunesApiService::class.java)
-        val call = service.search(query)
-
-        call.enqueue(object : Callback<SearchResponse> {
-            override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
-                binding.progressBarLayout.visibility = View.GONE
-                if (response.isSuccessful) {
-                    val searchResponse = response.body()
-                    searchResponse?.let {
-                        if (it.resultCount > 0) {
-                            trackList = it.results
-                            adapter.updateList(trackList)
-                            binding.trackRecycler.scrollToPosition(0)
-                        } else {
-                            adapter.clearList()
-                            notConnectedLayoutVis(false)
-                            notFoundLayoutVis(true)
-                        }
-                    }
+        searchTracksUseCase.execute(query) { result ->
+            binding.progressBarLayout.visibility = View.GONE
+            result.fold(onSuccess = { searchResult ->
+                if (searchResult.resultCount > 0) {
+                    trackList = searchResult.results.toMutableList()
+                    adapter.updateList(trackList)
+                    binding.trackRecycler.scrollToPosition(0)
                 } else {
-                    notFoundLayoutVis(false)
-                    notConnectedLayoutVis(true)
                     adapter.clearList()
+                    notConnectedLayoutVis(false)
+                    notFoundLayoutVis(true)
                 }
-            }
-
-            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                binding.progressBarLayout.visibility = View.GONE
+            }, onFailure = {
                 adapter.clearList()
                 notConnectedLayoutVis(true)
                 notFoundLayoutVis(false)
-            }
-        })
+            })
+        }
     }
 
     private fun openAudioPlayer(track: Track) {

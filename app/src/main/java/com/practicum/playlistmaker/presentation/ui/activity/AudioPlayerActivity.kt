@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.activity
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -11,6 +11,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.practicum.playlistmaker.domain.model.Track
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.ui.CURRENT_TRACK
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

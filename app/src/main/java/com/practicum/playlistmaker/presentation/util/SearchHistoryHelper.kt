@@ -1,15 +1,13 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.util
 
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import android.content.Context
-
+import com.practicum.playlistmaker.domain.model.Track
 
 const val PREF_KEY = "history"
 const val HISTORY_MAX_SIZE = 10
-class SearchHistoryHelper(
-    var sharedPref: SharedPreferences) {
+
+class SearchHistoryHelper(private val sharedPref: SharedPreferences) {
 
     fun read(): List<Track> {
         val json = sharedPref.getString(PREF_KEY, null) ?: return emptyList()
