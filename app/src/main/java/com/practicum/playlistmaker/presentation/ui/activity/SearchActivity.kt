@@ -14,12 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.domain.model.SearchResult
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.usecase.SearchTracksUseCase
-import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.presentation.ui.App
-import com.practicum.playlistmaker.presentation.ui.CURRENT_TRACK
+import com.practicum.playlistmaker.App
+import com.practicum.playlistmaker.CURRENT_TRACK
+import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.presentation.util.SearchHistoryHelper
 import com.practicum.playlistmaker.presentation.ui.adapter.TrackAdapter
 
@@ -38,7 +37,7 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
 
-    // Dependency on use case
+
     private lateinit var searchTracksUseCase: SearchTracksUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +45,7 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        searchTracksUseCase = (application as App).searchTracksUseCase
+        searchTracksUseCase = Creator.provideSearchTracksUseCase()
 
         adapter = TrackAdapter(trackList) { track ->
             searchHistoryClass.add(track)

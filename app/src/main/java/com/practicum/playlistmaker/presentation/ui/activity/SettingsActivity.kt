@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.presentation.ui.App
+import com.practicum.playlistmaker.App
 
 const val IS_DARK_THEME = "dark_theme_on"
 const val PREF_STATUS = "shared_preferences_status"
