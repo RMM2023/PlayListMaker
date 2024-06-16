@@ -1,17 +1,14 @@
 package com.practicum.playlistmaker.domain.usecase
 
-import android.media.MediaPlayer
 import com.practicum.playlistmaker.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.api.MediaPlayerRepository
 import com.practicum.playlistmaker.domain.model.MediaPlayerState
 
 class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) : MediaPlayerInteractor {
 
-    private var mediaPlayer: MediaPlayer? = null
     private var mediaPlayerState = MediaPlayerState.IDLE
 
     override fun initMediaPlayer(url: String) {
-        mediaPlayer = repository.createMediaPlayer()
         repository.prepareMediaPlayer(url)
         mediaPlayerState = MediaPlayerState.INITIALIZED
     }
@@ -29,7 +26,6 @@ class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) :
     override fun releaseMediaPlayer() {
         repository.releaseMediaPlayer()
         mediaPlayerState = MediaPlayerState.END
-        mediaPlayer = null
     }
 
     override fun getCurrentPosition(): Int {
@@ -41,7 +37,7 @@ class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) :
     }
 
     override fun setOnCompletionListener(listener: () -> Unit) {
-        mediaPlayer?.setOnCompletionListener {
+        repository.setOnCompletionListener {
             listener()
             mediaPlayerState = MediaPlayerState.COMPLETED
         }

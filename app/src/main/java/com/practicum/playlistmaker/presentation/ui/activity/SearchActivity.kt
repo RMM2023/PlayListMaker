@@ -37,7 +37,6 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
 
-
     private lateinit var searchTracksUseCase: SearchTracksUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +64,10 @@ class SearchActivity : AppCompatActivity() {
         }
 
         sharedPreferencesHistory = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
-        searchHistoryClass = SearchHistoryHelper(sharedPreferencesHistory!!)
+        sharedPreferencesHistory?.let {
+            searchHistoryClass = SearchHistoryHelper(it)
+        }
+
         historyAdapter = TrackAdapter(historyTrackList) { track ->
             openAudioPlayer(track)
         }
