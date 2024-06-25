@@ -86,11 +86,14 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.searchClearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+                updateUIVisibility(!s.isNullOrEmpty())
                 if (s.isNullOrEmpty()) {
-                    viewModel.clearSearchHistory()
+                    viewModel.loadSearchHistory()
+                    binding.NotFoundLayout.visibility = View.GONE
                 } else {
                     viewModel.search(s.toString())
                 }
+
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -105,25 +108,28 @@ class SearchActivity : AppCompatActivity() {
 
         viewModel.searchHistory.observe(this) { history ->
             historyAdapter.updateList(history.toMutableList())
-            binding.searchHistoryLayout.visibility = if (history.isNotEmpty()) View.VISIBLE else View.GONE
+            binding.searchHistoryLayout.visibility = if (history.isNotEmpty() && binding.searchEditText.text.isEmpty()) View.VISIBLE else View.GONE
         }
 
         viewModel.isLoading.observe(this) { isLoading ->
             binding.progressBarLayout.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-
-        viewModel.errorMessage.observe(this) { errorMessage ->
-            if (errorMessage != null) {
-                binding.NotConnectedLayout.visibility = View.VISIBLE
-            } else {
+            if (isLoading) {
+                binding.NotFoundLayout.visibility = View.GONE
                 binding.NotConnectedLayout.visibility = View.GONE
             }
+        }
+
+
+        viewModel.errorMessage.observe(this) { errorMessage ->
+            updateUIVisibility(errorMessage == null)
         }
     }
 
     private fun updateUIVisibility(hasResults: Boolean) {
         binding.trackRecycler.visibility = if (hasResults) View.VISIBLE else View.GONE
-        binding.NotFoundLayout.visibility = if (!hasResults) View.VISIBLE else View.GONE
+        binding.NotFoundLayout.visibility = if (!hasResults && viewModel.errorMessage.value == null) View.VISIBLE else View.GONE
+        binding.NotConnectedLayout.visibility = if (!hasResults && viewModel.errorMessage.value != null) View.VISIBLE else View.GONE
+        binding.searchHistoryLayout.visibility = if (!hasResults && binding.searchEditText.text.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun hideKeyboard() {
