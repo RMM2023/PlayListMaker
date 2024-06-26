@@ -3,6 +3,8 @@ package com.practicum.playlistmaker.presentation.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -25,6 +27,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var viewModel: SearchViewModel
     private lateinit var adapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
+
+    private var searchHandler = Handler(Looper.getMainLooper())
+    private var searchRunnable: Runnable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,13 +92,21 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.searchClearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
                 updateUIVisibility(!s.isNullOrEmpty())
+
+                searchRunnable?.let { searchHandler.removeCallbacks(it) }
+
                 if (s.isNullOrEmpty()) {
                     viewModel.loadSearchHistory()
                     binding.NotFoundLayout.visibility = View.GONE
+                    viewModel.setLoading(false)
                 } else {
-                    viewModel.search(s.toString())
+                    viewModel.setLoading(true)
+                    binding.trackRecycler.visibility = View.GONE
+                    searchRunnable = Runnable {
+                        viewModel.search(s.toString())
+                    }
+                    searchHandler.postDelayed(searchRunnable!!, 500L)
                 }
-
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -118,7 +131,6 @@ class SearchActivity : AppCompatActivity() {
                 binding.NotConnectedLayout.visibility = View.GONE
             }
         }
-
 
         viewModel.errorMessage.observe(this) { errorMessage ->
             updateUIVisibility(errorMessage == null)

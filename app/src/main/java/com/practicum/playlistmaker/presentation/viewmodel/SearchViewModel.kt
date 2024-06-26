@@ -33,7 +33,6 @@ class SearchViewModel(
     }
 
     fun search(query: String) {
-        _isLoading.value = true
         _errorMessage.value = null
         searchTracksUseCase.execute(query) { result ->
             _isLoading.postValue(false)
@@ -61,5 +60,9 @@ class SearchViewModel(
 
     fun loadSearchHistory() {
         _searchHistory.value = getSearchHistoryUseCase.execute()
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        _isLoading.value = isLoading
     }
 }
