@@ -34,6 +34,8 @@ class SearchViewModel(
 
     fun search(query: String) {
         _errorMessage.value = null
+        clearResults()
+        _isLoading.value = true
         searchTracksUseCase.execute(query) { result ->
             _isLoading.postValue(false)
             result.fold(
@@ -64,5 +66,9 @@ class SearchViewModel(
 
     fun setLoading(isLoading: Boolean) {
         _isLoading.value = isLoading
+    }
+
+    fun clearResults(){
+        _searchResults.value = emptyList()
     }
 }

@@ -47,7 +47,8 @@
             android:background="@drawable/backg"
             android:drawableStart="@drawable/search"
             android:drawablePadding="12dp"
-            android:paddingLeft="10dp"/>
+            android:paddingLeft="10dp"
+            android:textCursorDrawable="@drawable/cursor"/>
         <ImageView
             android:id="@+id/searchClearButton"
             android:layout_width="wrap_content"

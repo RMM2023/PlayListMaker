@@ -96,16 +96,17 @@ class SearchActivity : AppCompatActivity() {
                 searchRunnable?.let { searchHandler.removeCallbacks(it) }
 
                 if (s.isNullOrEmpty()) {
+                    viewModel.clearResults()
                     viewModel.loadSearchHistory()
                     binding.NotFoundLayout.visibility = View.GONE
                     viewModel.setLoading(false)
                 } else {
-                    viewModel.setLoading(true)
-                    binding.trackRecycler.visibility = View.GONE
                     searchRunnable = Runnable {
+                        viewModel.setLoading(true)
+                        binding.trackRecycler.visibility = View.GONE
                         viewModel.search(s.toString())
                     }
-                    searchHandler.postDelayed(searchRunnable!!, 500L)
+                    searchHandler.postDelayed(searchRunnable!!, 2000L) // Изменено с 500L на 2000L
                 }
             }
 
