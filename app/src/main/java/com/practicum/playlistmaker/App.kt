@@ -6,8 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val CURRENT_TRACK = "current_track"
-const val IS_DARK_THEME = "dark_theme_on"
-const val PREF_STATUS = "shared_preferences_status"
+const val THEME_KEY = "theme_key"
 const val PREF_NAME = "pref_name"
 
 class App : Application() {
@@ -16,8 +15,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val sPref = getSharedPreferences(IS_DARK_THEME, MODE_PRIVATE)
-        isDarkTheme = sPref.getBoolean(PREF_STATUS, false)
+        val sPref = getSharedPreferences("settings_prefs", MODE_PRIVATE)
+        isDarkTheme = sPref.getBoolean(THEME_KEY, false)
         themeToggle(isDarkTheme)
     }
 

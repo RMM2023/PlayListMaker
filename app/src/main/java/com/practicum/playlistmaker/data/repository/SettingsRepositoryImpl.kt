@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.data.repository
 
 import android.content.SharedPreferences
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.THEME_KEY
 import com.practicum.playlistmaker.data.ResourceManager
 import com.practicum.playlistmaker.domain.model.ThemeSettings
 import com.practicum.playlistmaker.domain.repository.SettingsRepository
@@ -11,9 +12,6 @@ class SettingsRepositoryImpl(
     private val resourceManager: ResourceManager
 ) : SettingsRepository {
 
-    companion object {
-        private const val THEME_KEY = "theme_key"
-    }
 
     override fun getThemeSettings(): ThemeSettings {
         val isDarkTheme = sharedPreferences.getBoolean(THEME_KEY, false)

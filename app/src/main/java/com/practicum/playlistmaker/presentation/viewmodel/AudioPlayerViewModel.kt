@@ -26,15 +26,19 @@ class AudioPlayerViewModel(
     private var updatePositionJob: java.util.Timer? = null
 
     init {
-        _isPlaying.value = false // Устанавливаем начальное значение false
-        _currentPosition.value = "00:00" // Устанавливаем начальное значение времени
+        _isPlaying.value = false
+        _currentPosition.value = "00:00"
     }
 
     fun initTrack(track: Track) {
         _track.value = track
         mediaPlayerInteractor.initMediaPlayer(track.previewUrl)
-        _isPlaying.value = false // Сбрасываем состояние воспроизведения при инициализации нового трека
-        _currentPosition.value = "00:00" // Сбрасываем позицию воспроизведения
+        _isPlaying.value = false
+        _currentPosition.value = "00:00"
+
+        mediaPlayerInteractor.setOnCompletionListener {
+            onPlaybackCompleted()
+        }
     }
 
     fun togglePlayPause() {
@@ -53,7 +57,7 @@ class AudioPlayerViewModel(
             override fun run() {
                 updatePosition()
             }
-        }, 0, 500)
+        }, 0, 300)
     }
 
     private fun stopUpdatingPosition() {
@@ -64,6 +68,12 @@ class AudioPlayerViewModel(
     private fun updatePosition() {
         val currentPosition = mediaPlayerInteractor.getCurrentPosition()
         _currentPosition.postValue(SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition))
+    }
+
+    private fun onPlaybackCompleted() {
+        _isPlaying.postValue(false)
+        _currentPosition.postValue("00:00")
+        stopUpdatingPosition()
     }
 
     fun formatTrackTime(timeMillis: Int): String {
