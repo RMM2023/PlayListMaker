@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="12dp">
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp">
 
     <ImageView
         android:id="@+id/track_image"
@@ -15,7 +16,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="10dp">
+        android:layout_gravity="center_vertical">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -26,6 +27,9 @@
                 android:id="@+id/track_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:maxWidth="250dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/ys_display_regular"
                 android:text="Smells Like Teen Spirit"
                 style="@style/TrackPrimary"
@@ -39,6 +43,9 @@
                 <TextView
                     android:id="@+id/track_artist"
                     style="@style/TrackSecondary"
+                    android:maxLines="1"
+                    android:maxWidth="200dp"
+                    android:ellipsize="end"
                     android:text="Nirvana"/>
 
                 <ImageView

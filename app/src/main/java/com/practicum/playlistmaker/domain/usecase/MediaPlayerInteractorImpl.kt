@@ -7,19 +7,28 @@ import com.practicum.playlistmaker.domain.model.MediaPlayerState
 class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) : MediaPlayerInteractor {
 
     private var mediaPlayerState = MediaPlayerState.IDLE
+    private var completionListener: (() -> Unit)? = null
 
     override fun initMediaPlayer(url: String) {
         repository.prepareMediaPlayer(url)
         mediaPlayerState = MediaPlayerState.INITIALIZED
+        repository.setOnCompletionListener {
+            mediaPlayerState = MediaPlayerState.COMPLETED
+            completionListener?.invoke()
+        }
     }
 
     override fun playPauseMediaPlayer() {
-        if (repository.isPlaying()) {
-            repository.pauseMediaPlayer()
-            mediaPlayerState = MediaPlayerState.PAUSED
-        } else {
-            repository.startMediaPlayer()
-            mediaPlayerState = MediaPlayerState.STARTED
+        when (mediaPlayerState) {
+            MediaPlayerState.INITIALIZED, MediaPlayerState.PAUSED, MediaPlayerState.COMPLETED -> {
+                repository.startMediaPlayer()
+                mediaPlayerState = MediaPlayerState.STARTED
+            }
+            MediaPlayerState.STARTED -> {
+                repository.pauseMediaPlayer()
+                mediaPlayerState = MediaPlayerState.PAUSED
+            }
+            else -> {}
         }
     }
 
@@ -33,13 +42,10 @@ class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) :
     }
 
     override fun isPlaying(): Boolean {
-        return repository.isPlaying()
+        return mediaPlayerState == MediaPlayerState.STARTED
     }
 
     override fun setOnCompletionListener(listener: () -> Unit) {
-        repository.setOnCompletionListener {
-            listener()
-            mediaPlayerState = MediaPlayerState.COMPLETED
-        }
+        completionListener = listener
     }
 }

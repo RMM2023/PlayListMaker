@@ -13,25 +13,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="26dp" />
+        app:layout_constraintGuide_percent="0.05"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="24dp" />
+        app:layout_constraintGuide_percent="0.95" />
 
     <Button
         android:id="@+id/button_back_player"
         style="@style/BackButton"
         android:layout_width="45dp"
         android:layout_height="45dp"
+        app:iconSize="20dp"
         android:gravity="center"
         app:icon="@drawable/arrow_left"
         app:layout_constraintBottom_toTopOf="@id/player_cover"
         app:layout_constraintStart_toEndOf="@id/guideline_left"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="5dp"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <ImageView
