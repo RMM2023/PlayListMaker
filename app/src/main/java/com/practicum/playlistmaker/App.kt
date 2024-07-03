@@ -2,12 +2,12 @@ package com.practicum.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.playlistmaker.presentation.ui.activity.IS_DARK_THEME
-import com.practicum.playlistmaker.presentation.ui.activity.PREF_STATUS
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val CURRENT_TRACK = "current_track"
+const val THEME_KEY = "theme_key"
+const val PREF_NAME = "pref_name"
 
 class App : Application() {
     var isDarkTheme: Boolean = false
@@ -15,8 +15,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val sPref = getSharedPreferences(IS_DARK_THEME, MODE_PRIVATE)
-        isDarkTheme = sPref.getBoolean(PREF_STATUS, false)
+        val sPref = getSharedPreferences("settings_prefs", MODE_PRIVATE)
+        isDarkTheme = sPref.getBoolean(THEME_KEY, false)
         themeToggle(isDarkTheme)
     }
 

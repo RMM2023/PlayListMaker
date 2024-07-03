@@ -4,60 +4,70 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
+import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.App
-
-const val IS_DARK_THEME = "dark_theme_on"
-const val PREF_STATUS = "shared_preferences_status"
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
+import com.practicum.playlistmaker.presentation.viewmodel.SettingsViewModel
+import com.practicum.playlistmaker.presentation.viewmodel.SettingsViewModelFactory
 
 class SettingsActivity : AppCompatActivity() {
-    lateinit var binding: ActivitySettingsBinding
+    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var viewModel: SettingsViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.themeSwitch.isChecked = (applicationContext as App).isDarkTheme
+
+        viewModel = ViewModelProvider(this, SettingsViewModelFactory(
+            Creator.provideGetThemeSettingsUseCase(applicationContext),
+            Creator.provideSetThemeSettingsUseCase(applicationContext),
+            Creator.provideGetShareAppLinkUseCase(applicationContext),
+            Creator.provideGetSupportEmailDataUseCase(applicationContext),
+            Creator.provideGetUserAgreementLinkUseCase(applicationContext)
+        )).get(SettingsViewModel::class.java)
+
+        setupUI()
+        observeViewModel()
+    }
+
+    private fun setupUI() {
+        binding.buttonBack.setOnClickListener { finish() }
+
         binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.toggleTheme(isChecked)
             (applicationContext as App).themeToggle(isChecked)
-            val sPref = getSharedPreferences(IS_DARK_THEME, MODE_PRIVATE)
-            sPref.edit()
-                .putBoolean(PREF_STATUS, isChecked)
-                .apply()
         }
 
-        binding.buttonBack.setOnClickListener {
-            finish()
-        }
         binding.shareButton.setOnClickListener {
-            val shareIntent = Intent()
-            shareIntent.apply {
-                action = Intent.ACTION_SEND
-                val courseURL = getString(R.string.course_url)
-                val shareText = getString(R.string.share)
-                putExtra(Intent.EXTRA_TEXT, courseURL)
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                startActivity(Intent.createChooser(this, shareText))
+                putExtra(Intent.EXTRA_TEXT, viewModel.getShareAppLink())
             }
+            startActivity(Intent.createChooser(shareIntent, "Share app"))
         }
+
         binding.supportButton.setOnClickListener {
-            val supportIntent = Intent()
-            supportIntent.apply {
-                action = Intent.ACTION_SENDTO
+            val (email, subject, body) = viewModel.getSupportEmailData()
+            val supportIntent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.my_Email)))
-                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_subject))
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.support_text))
-                startActivity(this)
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+                putExtra(Intent.EXTRA_SUBJECT, subject)
+                putExtra(Intent.EXTRA_TEXT, body)
             }
+            startActivity(supportIntent)
         }
+
         binding.agreeButton.setOnClickListener {
-            val agreeIntent = Intent()
-            agreeIntent.apply {
-                action = Intent.ACTION_VIEW
-                data = Uri.parse(getString(R.string.agreement_uri))
-                startActivity(this)
-            }
+            val agreeIntent = Intent(Intent.ACTION_VIEW, Uri.parse(viewModel.getUserAgreementLink()))
+            startActivity(agreeIntent)
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.themeSettings.observe(this) { settings ->
+            binding.themeSwitch.isChecked = settings.isDarkTheme
         }
     }
 }
