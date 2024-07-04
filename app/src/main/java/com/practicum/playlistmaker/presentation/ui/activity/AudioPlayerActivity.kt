@@ -3,7 +3,6 @@ package com.practicum.playlistmaker.presentation.ui.activity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
@@ -12,13 +11,12 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.CURRENT_TRACK
-import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.presentation.viewmodel.AudioPlayerViewModel
-import com.practicum.playlistmaker.presentation.viewmodel.AudioPlayerViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioPlayerBinding
-    private lateinit var viewModel: AudioPlayerViewModel
+    private val viewModel: AudioPlayerViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +29,6 @@ class AudioPlayerActivity : AppCompatActivity() {
             finish()
             return
         }
-
-        val mediaPlayerInteractor = Creator.provideMediaPlayerInteractor()
-        viewModel = ViewModelProvider(this, AudioPlayerViewModelFactory(mediaPlayerInteractor))
-            .get(AudioPlayerViewModel::class.java)
 
         viewModel.initTrack(track)
 

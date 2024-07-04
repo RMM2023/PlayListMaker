@@ -4,29 +4,19 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.App
-import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 import com.practicum.playlistmaker.presentation.viewmodel.SettingsViewModel
-import com.practicum.playlistmaker.presentation.viewmodel.SettingsViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(this, SettingsViewModelFactory(
-            Creator.provideGetThemeSettingsUseCase(applicationContext),
-            Creator.provideSetThemeSettingsUseCase(applicationContext),
-            Creator.provideGetShareAppLinkUseCase(applicationContext),
-            Creator.provideGetSupportEmailDataUseCase(applicationContext),
-            Creator.provideGetUserAgreementLinkUseCase(applicationContext)
-        )).get(SettingsViewModel::class.java)
 
         setupUI()
         observeViewModel()
