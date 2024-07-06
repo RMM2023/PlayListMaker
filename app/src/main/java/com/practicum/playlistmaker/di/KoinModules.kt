@@ -2,6 +2,8 @@ package com.practicum.playlistmaker.di
 
 import android.app.Application
 import android.content.Context
+import android.media.MediaPlayer
+import com.google.gson.Gson
 import com.practicum.playlistmaker.data.ResourceManager
 import com.practicum.playlistmaker.data.remote.api.ITunesApiService
 import com.practicum.playlistmaker.data.repository.MediaPlayerRepositoryImpl
@@ -33,11 +35,14 @@ val dataModule = module {
             .build()
             .create(ITunesApiService::class.java)
     }
+    single { Gson() }
+    factory { MediaPlayer() }
     single<TrackRepository> { TrackRepositoryImpl(get()) }
-    single<SearchHistoryRepository> { SearchHistoryRepositoryImpl(get()) }
+    single<SearchHistoryRepository> { SearchHistoryRepositoryImpl(get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get(), get()) }
-    single<MediaPlayerRepository> { MediaPlayerRepositoryImpl() }
+    factory<MediaPlayerRepository> { MediaPlayerRepositoryImpl(get()) }
 }
+
 
 val domainModule = module {
     factory { SearchTracksUseCase(get()) }

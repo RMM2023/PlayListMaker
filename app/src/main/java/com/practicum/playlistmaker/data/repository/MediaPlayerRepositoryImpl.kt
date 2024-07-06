@@ -3,10 +3,12 @@ package com.practicum.playlistmaker.data.repository
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.domain.api.MediaPlayerRepository
 
-class MediaPlayerRepositoryImpl : MediaPlayerRepository {
-    private val mediaPlayer: MediaPlayer = MediaPlayer()
+class MediaPlayerRepositoryImpl(
+    private val mediaPlayer: MediaPlayer
+) : MediaPlayerRepository {
 
     override fun prepareMediaPlayer(url: String) {
+        mediaPlayer.reset()
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
     }
