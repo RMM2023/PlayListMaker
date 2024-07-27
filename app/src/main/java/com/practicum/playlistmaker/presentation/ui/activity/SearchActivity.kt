@@ -10,21 +10,19 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.CURRENT_TRACK
-import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.presentation.ui.adapter.TrackAdapter
 import com.practicum.playlistmaker.presentation.viewmodel.SearchViewModel
-import com.practicum.playlistmaker.presentation.viewmodel.SearchViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
     private lateinit var adapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
@@ -36,22 +34,11 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupViewModel()
         setupRecyclerViews()
         setupListeners()
         observeViewModel()
 
         viewModel.loadSearchHistory()
-    }
-
-    private fun setupViewModel() {
-        val factory = SearchViewModelFactory(
-            Creator.provideSearchTracksUseCase(),
-            Creator.provideGetSearchHistoryUseCase(applicationContext),
-            Creator.provideAddTrackToHistoryUseCase(applicationContext),
-            Creator.provideClearSearchHistoryUseCase(applicationContext)
-        )
-        viewModel = ViewModelProvider(this, factory).get(SearchViewModel::class.java)
     }
 
     private fun setupRecyclerViews() {

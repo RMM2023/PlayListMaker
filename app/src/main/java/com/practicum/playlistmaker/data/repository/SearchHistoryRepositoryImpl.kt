@@ -5,9 +5,10 @@ import com.google.gson.Gson
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.repository.SearchHistoryRepository
 
-class SearchHistoryRepositoryImpl(private val sharedPreferences: SharedPreferences) :
-    SearchHistoryRepository {
-    private val gson = Gson()
+class SearchHistoryRepositoryImpl(
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson
+) : SearchHistoryRepository {
 
     override fun getSearchHistory(): List<Track> {
         val json = sharedPreferences.getString(PREF_KEY, null)

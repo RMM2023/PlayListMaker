@@ -2,8 +2,12 @@ package com.practicum.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.practicum.playlistmaker.di.dataModule
+import com.practicum.playlistmaker.di.domainModule
+import com.practicum.playlistmaker.di.viewModelModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 
 const val CURRENT_TRACK = "current_track"
 const val THEME_KEY = "theme_key"
@@ -14,6 +18,12 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            androidLogger()
+            androidContext(this@App)
+            modules(dataModule, domainModule, viewModelModule)
+        }
 
         val sPref = getSharedPreferences("settings_prefs", MODE_PRIVATE)
         isDarkTheme = sPref.getBoolean(THEME_KEY, false)
