@@ -129,4 +129,9 @@
     <style name="PlayButton">
         <item name="android:src">@drawable/play</item>
     </style>
+    <style name="tabLayoutStyle">
+        <item name="textAllCaps">false</item>
+        <item name="tabTextColor">@color/black</item>
+        <item name="tabIndicatorColor">@color/black</item>
+    </style>
 </resources>

@@ -110,4 +110,9 @@
     <style name="PlayButton">
         <item name="android:src">@drawable/pause</item>
     </style>
+    <style name="tabLayoutStyle">
+        <item name="textAllCaps">false</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="tabIndicatorColor">@color/white</item>
+    </style>
 </resources>
