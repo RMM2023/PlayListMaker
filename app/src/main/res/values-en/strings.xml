@@ -22,4 +22,8 @@
     <string name="play_clicked_toast">Кнопка Play нажата</string>
     <string name="like_clicked_toast">%1$s добавлена в favorite</string>
     <string name="add_clicked_toast">%1$s Добавлен в Плейлист</string>
+    <string name="new_playlist">"New Playlist "</string>
+    <string name="no_playlists">You have created\\nno playlists</string>
+    <string name="mediateka_empty">Your mediateka is empty</string>
+    <string name="mediateka">Mediateka</string>
 </resources>
