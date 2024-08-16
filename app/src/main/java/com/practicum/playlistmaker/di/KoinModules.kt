@@ -17,6 +17,9 @@ import com.practicum.playlistmaker.domain.repository.SettingsRepository
 import com.practicum.playlistmaker.domain.repository.TrackRepository
 import com.practicum.playlistmaker.domain.usecase.*
 import com.practicum.playlistmaker.presentation.viewmodel.AudioPlayerViewModel
+import com.practicum.playlistmaker.presentation.viewmodel.FavoriteViewModel
+import com.practicum.playlistmaker.presentation.viewmodel.MediaViewModel
+import com.practicum.playlistmaker.presentation.viewmodel.PlayListViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.SearchViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
@@ -61,4 +64,7 @@ val viewModelModule = module {
     viewModel { SearchViewModel(get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get(), get(), get(), get(), get()) }
     viewModel { AudioPlayerViewModel(get()) }
+    viewModel { FavoriteViewModel() }
+    viewModel { MediaViewModel()}
+    viewModel { PlayListViewModel()}
 }
