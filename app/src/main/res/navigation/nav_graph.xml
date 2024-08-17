@@ -29,4 +29,5 @@
         android:name="com.practicum.playlistmaker.presentation.ui.activity.AudioPlayerActivity"
         android:label="activity_audio_player"
         tools:layout="@layout/activity_audio_player" />
+
 </navigation>

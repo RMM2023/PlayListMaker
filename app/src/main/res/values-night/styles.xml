@@ -115,4 +115,9 @@
         <item name="tabTextColor">@color/white</item>
         <item name="tabIndicatorColor">@color/white</item>
     </style>
+    <style name="bottomViewStyle">
+        <item name="android:background">@color/yp_black</item>
+        <item name="itemIconTint">@drawable/nav_color_state_dark</item>
+        <item name="itemTextColor">@drawable/nav_color_state_dark</item>
+    </style>
 </resources>
