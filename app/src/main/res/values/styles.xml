@@ -141,7 +141,9 @@
         <item name="backgroundTint">@color/white</item>
     </style>
     <style name="bottomViewStyle">
-        <item name="android:background">@color/white</item>
-        <item name="itemIconTint">@drawable/nav_color_state</item>
+        <item name="android:background">@color/yp_black</item>
+    </style>
+    <style name="BottomNavigationTextAppearance" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item>
     </style>
 </resources>

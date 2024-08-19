@@ -86,22 +86,23 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.searchClearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
-                updateUIVisibility(!s.isNullOrEmpty())
 
                 searchRunnable?.let { searchHandler.removeCallbacks(it) }
 
                 if (s.isNullOrEmpty()) {
                     viewModel.clearResults()
                     viewModel.loadSearchHistory()
+                    binding.trackRecycler.visibility = View.GONE
                     binding.NotFoundLayout.visibility = View.GONE
+                    binding.NotConnectedLayout.visibility = View.GONE
                     viewModel.setLoading(false)
+                    updateUIVisibility(false) // Добавлено
                 } else {
                     searchRunnable = Runnable {
                         viewModel.setLoading(true)
-                        binding.trackRecycler.visibility = View.GONE
                         viewModel.search(s.toString())
                     }
-                    searchHandler.postDelayed(searchRunnable!!, 2000L) // Изменено с 500L на 2000L
+                    searchHandler.postDelayed(searchRunnable!!, 2000L)
                 }
             }
 
@@ -117,27 +118,43 @@ class SearchFragment : Fragment() {
 
         viewModel.searchHistory.observe(viewLifecycleOwner) { history ->
             historyAdapter.updateList(history.toMutableList())
-            binding.searchHistoryLayout.visibility = if (history.isNotEmpty() && binding.searchEditText.text.isEmpty()) View.VISIBLE else View.GONE
+            updateUIVisibility(history.isNotEmpty())
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBarLayout.visibility = if (isLoading) View.VISIBLE else View.GONE
-            if (isLoading) {
-                binding.NotFoundLayout.visibility = View.GONE
-                binding.NotConnectedLayout.visibility = View.GONE
-            }
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
-            updateUIVisibility(errorMessage == null)
+            updateUIVisibility(false)
         }
     }
 
     private fun updateUIVisibility(hasResults: Boolean) {
-        binding.trackRecycler.visibility = if (hasResults) View.VISIBLE else View.GONE
-        binding.NotFoundLayout.visibility = if (!hasResults && viewModel.errorMessage.value == null) View.VISIBLE else View.GONE
-        binding.NotConnectedLayout.visibility = if (!hasResults && viewModel.errorMessage.value != null) View.VISIBLE else View.GONE
-        binding.searchHistoryLayout.visibility = if (!hasResults && binding.searchEditText.text.isEmpty()) View.VISIBLE else View.GONE
+        val searchText = binding.searchEditText.text.toString()
+        val isSearchEmpty = searchText.isEmpty()
+
+        // Если есть результаты поиска, показываем результаты
+        if (hasResults) {
+            binding.trackRecycler.visibility = View.VISIBLE
+            binding.NotFoundLayout.visibility = View.GONE
+            binding.searchHistoryLayout.visibility = View.GONE
+            binding.NotConnectedLayout.visibility = View.GONE
+        } else {
+            binding.trackRecycler.visibility = View.GONE
+
+            // Если строка поиска пустая, показываем историю поиска
+            if (isSearchEmpty) {
+                binding.searchHistoryLayout.visibility = View.VISIBLE
+                binding.NotFoundLayout.visibility = View.GONE
+                binding.NotConnectedLayout.visibility = View.GONE
+            } else {
+                // Если строки поиска нет, и результатов поиска нет, показываем "Ничего не найдено"
+                binding.searchHistoryLayout.visibility = View.GONE
+                binding.NotFoundLayout.visibility = if (viewModel.errorMessage.value == null) View.VISIBLE else View.GONE
+                binding.NotConnectedLayout.visibility = if (viewModel.errorMessage.value != null) View.VISIBLE else View.GONE
+            }
+        }
     }
 
     private fun hideKeyboard() {

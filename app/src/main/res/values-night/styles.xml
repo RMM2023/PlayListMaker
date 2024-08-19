@@ -120,4 +120,7 @@
         <item name="itemIconTint">@drawable/nav_color_state_dark</item>
         <item name="itemTextColor">@drawable/nav_color_state_dark</item>
     </style>
+    <style name="bottomViewStyle">
+        <item name="android:background">@color/white</item>
+    </style>
 </resources>
