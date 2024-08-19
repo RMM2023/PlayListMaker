@@ -136,6 +136,9 @@
     </style>
     <style name="bottomNavStyle">
         <item name="android:backgroundTint">@color/white</item>
+        <item name="itemIconTint">@drawable/nav_color_state</item>
+        <item name="itemTextColor">@drawable/nav_color_state</item>
+        <item name="backgroundTint">@color/white</item>
     </style>
     <style name="bottomViewStyle">
         <item name="android:background">@color/white</item>
