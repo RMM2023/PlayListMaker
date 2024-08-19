@@ -1,15 +1,12 @@
 package com.practicum.playlistmaker.presentation.ui.fragments
 
-import android.os.Binder
-import androidx.appcompat.app.AppCompatActivity
+
 import android.os.Bundle
-import android.renderscript.ScriptGroup.Binding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
-import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentMediaBinding
 import com.practicum.playlistmaker.presentation.ui.adapter.ViewPagerAdapter
 

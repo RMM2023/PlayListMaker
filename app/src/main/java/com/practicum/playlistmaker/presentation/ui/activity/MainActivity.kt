@@ -6,12 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityMainBinding
-import com.example.playlistmaker.presentation.ui.search.SearchActivity
-import com.example.playlistmaker.presentation.ui.settings.SettingsActivity
-import com.example.playlistmaker.presentation.ui.mediateka.MediatekaActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -25,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
     }
 
