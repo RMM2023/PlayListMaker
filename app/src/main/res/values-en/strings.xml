@@ -26,4 +26,6 @@
     <string name="no_playlists">You have created\\nno playlists</string>
     <string name="mediateka_empty">Your mediateka is empty</string>
     <string name="mediateka">Mediateka</string>
+    <string name="SelectedTracks">Selected tracks</string>
+    <string name="Playlists">Playlists</string>
 </resources>
