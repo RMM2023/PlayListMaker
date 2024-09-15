@@ -3,8 +3,13 @@ package com.practicum.playlistmaker.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.model.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -23,7 +28,7 @@ class AudioPlayerViewModel(
     private val _currentPosition = MutableLiveData<String>()
     val currentPosition: LiveData<String> = _currentPosition
 
-    private var updatePositionJob: java.util.Timer? = null
+    private var updatePositionJob: Job? = null
 
     init {
         _isPlaying.value = false
@@ -52,27 +57,27 @@ class AudioPlayerViewModel(
     }
 
     private fun startUpdatingPosition() {
-        updatePositionJob = java.util.Timer()
-        updatePositionJob?.schedule(object : java.util.TimerTask() {
-            override fun run() {
+        updatePositionJob?.cancel()
+        updatePositionJob = viewModelScope.launch {
+            while (isActive) {
                 updatePosition()
+                delay(300)
             }
-        }, 0, 300)
+        }
     }
 
     private fun stopUpdatingPosition() {
         updatePositionJob?.cancel()
-        updatePositionJob = null
     }
 
     private fun updatePosition() {
         val currentPosition = mediaPlayerInteractor.getCurrentPosition()
-        _currentPosition.postValue(SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition))
+        _currentPosition.value = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition)
     }
 
     private fun onPlaybackCompleted() {
-        _isPlaying.postValue(false)
-        _currentPosition.postValue("00:00")
+        _isPlaying.value = false
+        _currentPosition.value = "00:00"
         stopUpdatingPosition()
     }
 
