@@ -1,33 +1,40 @@
-package com.practicum.playlistmaker.presentation.ui.activity
+package com.practicum.playlistmaker.presentation.ui.fragments
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.App
-import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.presentation.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySettingsBinding
+class SettingsFragment : Fragment() {
+    private lateinit var binding: FragmentSettingsBinding
     private val viewModel: SettingsViewModel by viewModel()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupUI()
         observeViewModel()
     }
 
     private fun setupUI() {
-        binding.buttonBack.setOnClickListener { finish() }
 
         binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
             viewModel.toggleTheme(isChecked)
-            (applicationContext as App).themeToggle(isChecked)
+            (requireContext().applicationContext as App).themeToggle(isChecked)
         }
 
         binding.shareButton.setOnClickListener {
@@ -56,7 +63,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.themeSettings.observe(this) { settings ->
+        viewModel.themeSettings.observe(viewLifecycleOwner) {settings ->
             binding.themeSwitch.isChecked = settings.isDarkTheme
         }
     }

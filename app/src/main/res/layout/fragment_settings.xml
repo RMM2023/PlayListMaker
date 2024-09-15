@@ -9,8 +9,7 @@
     <Button
         android:id="@+id/button_back"
         style="@style/ButtonBack"
-        android:text="@string/settings"
-        app:drawableLeftCompat="@drawable/arrow_left"/>
+        android:text="@string/settings"/>
 
     <LinearLayout
         android:layout_width="match_parent"

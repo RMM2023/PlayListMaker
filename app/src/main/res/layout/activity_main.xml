@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="?attr/colorPrimary"
-    android:padding="20dp">
+    android:layout_height="match_parent">
 
-    <FrameLayout
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationBar"/>
+
+    <View
+        style="@style/bottomViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            style="@style/TextMain"
-            android:text="@string/title"/>
+        android:layout_height="0.5dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    </FrameLayout>
-    <Button
-        android:id="@+id/search_button"
-        style="@style/ButtonBase"
-        android:text="@string/search"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationBar"
+        style="@style/bottomNavStyle"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        app:itemIconSize="@dimen/text_24dp"
+        app:itemPaddingTop="10dp"
+        app:itemPaddingBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu"
+        app:itemActiveIndicatorStyle="@style/Widget.Design.BottomNavigationView"
+        app:itemTextAppearanceActive="@style/BottomNavigationTextAppearance"
+        app:itemTextAppearanceInactive="@style/BottomNavigationTextAppearance"/>
 
-        app:icon="@drawable/search"
-        app:iconGravity = "textStart"
-        app:cornerRadius = "@dimen/basic_16dp"
-        />
-    <Button
-        android:id="@+id/media_button"
-        style="@style/ButtonBase"
-        android:text="@string/media"
-        app:icon="@drawable/media"
-        app:iconGravity = "textStart"
-        app:cornerRadius = "@dimen/basic_16dp"/>
-    <Button
-        android:id="@+id/settings_button"
-        style="@style/ButtonBase"
-        android:text="@string/settings"
-        app:icon="@drawable/settings"
-        app:iconGravity = "textStart"
-        app:cornerRadius = "@dimen/basic_16dp"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.practicum.playlistmaker.presentation.ui.activity.FavoriteFragment
-import com.practicum.playlistmaker.presentation.ui.activity.PlaylistFragment
+import com.practicum.playlistmaker.presentation.ui.fragments.FavoriteFragment
+import com.practicum.playlistmaker.presentation.ui.fragments.PlaylistFragment
 
 const val COUNT_TAB = 2
 

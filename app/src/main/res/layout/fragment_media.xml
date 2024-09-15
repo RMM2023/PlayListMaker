@@ -15,14 +15,6 @@
         android:layout_margin="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <Button
-            android:id="@+id/mediaBackButton"
-            style="@style/SearchButtonStyle"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:icon="@drawable/arrow_left"
-            android:paddingLeft="@dimen/basic_16dp"
-            android:paddingTop="10dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

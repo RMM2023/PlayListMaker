@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation.ui.activity
+package com.practicum.playlistmaker.presentation.ui.fragments
 
 import android.content.Context
 import android.content.Intent
@@ -7,21 +7,24 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.CURRENT_TRACK
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
+import com.practicum.playlistmaker.presentation.ui.activity.AudioPlayerActivity
 import com.practicum.playlistmaker.presentation.ui.adapter.TrackAdapter
 import com.practicum.playlistmaker.presentation.viewmodel.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
 
-    private lateinit var binding: ActivitySearchBinding
+    private lateinit var binding: FragmentSearchBinding
     private val viewModel: SearchViewModel by viewModel()
     private lateinit var adapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
@@ -29,11 +32,17 @@ class SearchActivity : AppCompatActivity() {
     private var searchHandler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupRecyclerViews()
         setupListeners()
         observeViewModel()
@@ -47,17 +56,16 @@ class SearchActivity : AppCompatActivity() {
             openAudioPlayer(track)
         }
         binding.trackRecycler.adapter = adapter
-        binding.trackRecycler.layoutManager = LinearLayoutManager(this)
+        binding.trackRecycler.layoutManager = LinearLayoutManager(requireContext())
 
         historyAdapter = TrackAdapter(mutableListOf()) { track ->
             openAudioPlayer(track)
         }
         binding.searchHistoryRecycleView.adapter = historyAdapter
-        binding.searchHistoryRecycleView.layoutManager = LinearLayoutManager(this)
+        binding.searchHistoryRecycleView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun setupListeners() {
-        binding.searchBackButton.setOnClickListener { finish() }
 
         binding.searchClearButton.setOnClickListener {
             binding.searchEditText.setText("")
@@ -78,22 +86,23 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.searchClearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
-                updateUIVisibility(!s.isNullOrEmpty())
 
                 searchRunnable?.let { searchHandler.removeCallbacks(it) }
 
                 if (s.isNullOrEmpty()) {
                     viewModel.clearResults()
                     viewModel.loadSearchHistory()
+                    binding.trackRecycler.visibility = View.GONE
                     binding.NotFoundLayout.visibility = View.GONE
+                    binding.NotConnectedLayout.visibility = View.GONE
                     viewModel.setLoading(false)
+                    updateUIVisibility(false) // Добавлено
                 } else {
                     searchRunnable = Runnable {
                         viewModel.setLoading(true)
-                        binding.trackRecycler.visibility = View.GONE
                         viewModel.search(s.toString())
                     }
-                    searchHandler.postDelayed(searchRunnable!!, 2000L) // Изменено с 500L на 2000L
+                    searchHandler.postDelayed(searchRunnable!!, 2000L)
                 }
             }
 
@@ -102,43 +111,59 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.searchResults.observe(this) { tracks ->
+        viewModel.searchResults.observe(viewLifecycleOwner) { tracks ->
             adapter.updateList(tracks.toMutableList())
             updateUIVisibility(tracks.isNotEmpty())
         }
 
-        viewModel.searchHistory.observe(this) { history ->
+        viewModel.searchHistory.observe(viewLifecycleOwner) { history ->
             historyAdapter.updateList(history.toMutableList())
-            binding.searchHistoryLayout.visibility = if (history.isNotEmpty() && binding.searchEditText.text.isEmpty()) View.VISIBLE else View.GONE
+            updateUIVisibility(history.isNotEmpty())
         }
 
-        viewModel.isLoading.observe(this) { isLoading ->
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBarLayout.visibility = if (isLoading) View.VISIBLE else View.GONE
-            if (isLoading) {
-                binding.NotFoundLayout.visibility = View.GONE
-                binding.NotConnectedLayout.visibility = View.GONE
-            }
         }
 
-        viewModel.errorMessage.observe(this) { errorMessage ->
-            updateUIVisibility(errorMessage == null)
+        viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            updateUIVisibility(false)
         }
     }
 
     private fun updateUIVisibility(hasResults: Boolean) {
-        binding.trackRecycler.visibility = if (hasResults) View.VISIBLE else View.GONE
-        binding.NotFoundLayout.visibility = if (!hasResults && viewModel.errorMessage.value == null) View.VISIBLE else View.GONE
-        binding.NotConnectedLayout.visibility = if (!hasResults && viewModel.errorMessage.value != null) View.VISIBLE else View.GONE
-        binding.searchHistoryLayout.visibility = if (!hasResults && binding.searchEditText.text.isEmpty()) View.VISIBLE else View.GONE
+        val searchText = binding.searchEditText.text.toString()
+        val isSearchEmpty = searchText.isEmpty()
+
+        // Если есть результаты поиска, показываем результаты
+        if (hasResults) {
+            binding.trackRecycler.visibility = View.VISIBLE
+            binding.NotFoundLayout.visibility = View.GONE
+            binding.searchHistoryLayout.visibility = View.GONE
+            binding.NotConnectedLayout.visibility = View.GONE
+        } else {
+            binding.trackRecycler.visibility = View.GONE
+
+            // Если строка поиска пустая, показываем историю поиска
+            if (isSearchEmpty) {
+                binding.searchHistoryLayout.visibility = View.VISIBLE
+                binding.NotFoundLayout.visibility = View.GONE
+                binding.NotConnectedLayout.visibility = View.GONE
+            } else {
+                // Если строки поиска нет, и результатов поиска нет, показываем "Ничего не найдено"
+                binding.searchHistoryLayout.visibility = View.GONE
+                binding.NotFoundLayout.visibility = if (viewModel.errorMessage.value == null) View.VISIBLE else View.GONE
+                binding.NotConnectedLayout.visibility = if (viewModel.errorMessage.value != null) View.VISIBLE else View.GONE
+            }
+        }
     }
 
     private fun hideKeyboard() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
     }
 
     private fun openAudioPlayer(track: Track) {
-        val intent = Intent(this, AudioPlayerActivity::class.java)
+        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
         intent.putExtra(CURRENT_TRACK, Gson().toJson(track))
         startActivity(intent)
     }
