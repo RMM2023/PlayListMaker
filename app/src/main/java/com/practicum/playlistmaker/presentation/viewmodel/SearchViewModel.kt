@@ -95,9 +95,7 @@ class SearchViewModel(
     }
 
     fun loadSearchHistory() {
-        viewModelScope.launch {
-            _searchHistory.value = getSearchHistoryUseCase.execute()
-        }
+        _searchHistory.value = getSearchHistoryUseCase.execute()
     }
 
     fun setLoading(isLoading: Boolean) {

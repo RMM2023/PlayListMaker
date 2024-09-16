@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.presentation.viewmodel
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,4 +33,13 @@ class SettingsViewModel(
     fun getSupportEmailData(): Triple<String, String, String> = getSupportEmailDataUseCase.execute()
 
     fun getUserAgreementLink(): String = getUserAgreementLinkUseCase.execute()
+
+    fun applyTheme(isDarkTheme: Boolean) {
+        // Здесь логика применения темы
+        // Например, можно использовать AppCompatDelegate
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkTheme) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
+    }
 }

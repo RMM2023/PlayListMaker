@@ -48,6 +48,7 @@ class SearchFragment : Fragment() {
         observeViewModel()
 
         viewModel.loadSearchHistory()
+        updateUIVisibility(false)
     }
 
     private fun setupRecyclerViews() {
@@ -118,7 +119,7 @@ class SearchFragment : Fragment() {
 
         viewModel.searchHistory.observe(viewLifecycleOwner) { history ->
             historyAdapter.updateList(history.toMutableList())
-            updateUIVisibility(history.isNotEmpty())
+            updateUIVisibility(history.isEmpty())
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->

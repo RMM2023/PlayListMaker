@@ -34,7 +34,6 @@ class SettingsFragment : Fragment() {
 
         binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
             viewModel.toggleTheme(isChecked)
-            (requireContext().applicationContext as App).themeToggle(isChecked)
         }
 
         binding.shareButton.setOnClickListener {
@@ -63,8 +62,9 @@ class SettingsFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.themeSettings.observe(viewLifecycleOwner) {settings ->
+        viewModel.themeSettings.observe(viewLifecycleOwner) { settings ->
             binding.themeSwitch.isChecked = settings.isDarkTheme
+            viewModel.applyTheme(settings.isDarkTheme)
         }
     }
 }
