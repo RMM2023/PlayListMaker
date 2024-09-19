@@ -13,7 +13,7 @@ import com.practicum.playlistmaker.presentation.ui.adapter.ViewPagerAdapter
 
 class MediaFragment : Fragment() {
     lateinit var binding : FragmentMediaBinding
-    lateinit var tabMediator : TabLayoutMediator
+    private var tabMediator: TabLayoutMediator? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,18 +28,17 @@ class MediaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.viewPager2.adapter = ViewPagerAdapter(childFragmentManager, lifecycle)
 
-        tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager2){
-                tab, position ->
-            when (position){
+        tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
+            when (position) {
                 0 -> tab.text = getString(R.string.SelectedTracks)
                 else -> tab.text = getString(R.string.Playlists)
             }
         }
-        tabMediator.attach()
+        tabMediator?.attach()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        tabMediator.detach()
+        tabMediator?.detach()
     }
 }

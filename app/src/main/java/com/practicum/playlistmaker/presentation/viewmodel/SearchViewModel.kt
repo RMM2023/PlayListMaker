@@ -3,11 +3,18 @@ package com.practicum.playlistmaker.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.usecase.SearchTracksUseCase
 import com.practicum.playlistmaker.domain.usecase.GetSearchHistoryUseCase
 import com.practicum.playlistmaker.domain.usecase.AddTrackToHistoryUseCase
 import com.practicum.playlistmaker.domain.usecase.ClearSearchHistoryUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchTracksUseCase: SearchTracksUseCase,
@@ -28,36 +35,63 @@ class SearchViewModel(
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
+    private val searchQueryFlow = MutableStateFlow("")
+
     init {
         loadSearchHistory()
+        setupSearchQueryDebounce()
+    }
+
+    private fun setupSearchQueryDebounce() {
+        searchQueryFlow
+            .debounce(2000)
+            .onEach { query ->
+                if (query.isNotEmpty()) {
+                    search(query)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun updateSearchQuery(query: String) {
+        searchQueryFlow.value = query
+        if (query.isEmpty()) {
+            clearResults()
+            loadSearchHistory()
+        }
     }
 
     fun search(query: String) {
         _errorMessage.value = null
         clearResults()
         _isLoading.value = true
-        searchTracksUseCase.execute(query) { result ->
-            _isLoading.postValue(false)
-            result.fold(
-                onSuccess = { searchResult ->
-                    _searchResults.postValue(searchResult.results)
-                },
-                onFailure = {
-                    _errorMessage.postValue("Error occurred while searching")
-                    _searchResults.postValue(emptyList())
-                }
-            )
+        viewModelScope.launch {
+            try {
+                // Получаем первый результат из потока
+                val result = searchTracksUseCase.execute(query).first()
+                _searchResults.value = result.results
+            } catch (e: Exception) {
+                _errorMessage.value = "Error occurred while searching"
+                _searchResults.value = emptyList()
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
+
     fun addTrackToHistory(track: Track) {
-        addTrackToHistoryUseCase.execute(track)
-        loadSearchHistory()
+        viewModelScope.launch {
+            addTrackToHistoryUseCase.execute(track)
+            loadSearchHistory()
+        }
     }
 
     fun clearSearchHistory() {
-        clearSearchHistoryUseCase.execute()
-        loadSearchHistory()
+        viewModelScope.launch {
+            clearSearchHistoryUseCase.execute()
+            loadSearchHistory()
+        }
     }
 
     fun loadSearchHistory() {
@@ -68,7 +102,7 @@ class SearchViewModel(
         _isLoading.value = isLoading
     }
 
-    fun clearResults(){
+    fun clearResults() {
         _searchResults.value = emptyList()
     }
 }
