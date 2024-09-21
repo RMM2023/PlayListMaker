@@ -3,8 +3,10 @@ package com.practicum.playlistmaker.di
 import android.app.Application
 import android.content.Context
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.google.gson.Gson
 import com.practicum.playlistmaker.data.ResourceManager
+import com.practicum.playlistmaker.data.db.AppDataBase
 import com.practicum.playlistmaker.data.remote.api.ITunesApiService
 import com.practicum.playlistmaker.data.repository.MediaPlayerRepositoryImpl
 import com.practicum.playlistmaker.data.repository.SearchHistoryRepositoryImpl
@@ -12,6 +14,7 @@ import com.practicum.playlistmaker.data.repository.SettingsRepositoryImpl
 import com.practicum.playlistmaker.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.api.MediaPlayerRepository
+import com.practicum.playlistmaker.domain.interactor.FavoriteTracksInteractor
 import com.practicum.playlistmaker.domain.repository.SearchHistoryRepository
 import com.practicum.playlistmaker.domain.repository.SettingsRepository
 import com.practicum.playlistmaker.domain.repository.TrackRepository
@@ -43,6 +46,9 @@ val dataModule = module {
     single<TrackRepository> { TrackRepositoryImpl(get()) }
     single<SearchHistoryRepository> { SearchHistoryRepositoryImpl(get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get(), get()) }
+    single{
+        Room.databaseBuilder(androidContext(), AppDataBase::class.java, "play-list-maker-db").build()
+    }
     factory<MediaPlayerRepository> { MediaPlayerRepositoryImpl(get()) }
 }
 
@@ -57,14 +63,15 @@ val domainModule = module {
     factory { GetShareAppLinkUseCase(get()) }
     factory { GetSupportEmailDataUseCase(get()) }
     factory { GetUserAgreementLinkUseCase(get()) }
+    factory { FavoriteTracksInteractor(get()) }
     factory<MediaPlayerInteractor> { MediaPlayerInteractorImpl(get()) }
 }
 
 val viewModelModule = module {
     viewModel { SearchViewModel(get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { AudioPlayerViewModel(get()) }
-    viewModel { FavoriteViewModel() }
+    viewModel { AudioPlayerViewModel(get(), get()) }
+    viewModel { FavoriteViewModel(get()) }
     viewModel { MediaViewModel()}
     viewModel { PlayListViewModel()}
 }
