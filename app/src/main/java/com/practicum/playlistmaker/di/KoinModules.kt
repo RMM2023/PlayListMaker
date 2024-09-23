@@ -1,13 +1,13 @@
 package com.practicum.playlistmaker.di
 
-import android.app.Application
 import android.content.Context
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.google.gson.Gson
 import com.practicum.playlistmaker.data.ResourceManager
-import com.practicum.playlistmaker.data.db.AppDataBase
+import com.practicum.playlistmaker.data.db.AppDatabase
 import com.practicum.playlistmaker.data.remote.api.ITunesApiService
+import com.practicum.playlistmaker.data.repository.FavoriteTracksRepositoryImpl
 import com.practicum.playlistmaker.data.repository.MediaPlayerRepositoryImpl
 import com.practicum.playlistmaker.data.repository.SearchHistoryRepositoryImpl
 import com.practicum.playlistmaker.data.repository.SettingsRepositoryImpl
@@ -15,6 +15,7 @@ import com.practicum.playlistmaker.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.api.MediaPlayerRepository
 import com.practicum.playlistmaker.domain.interactor.FavoriteTracksInteractor
+import com.practicum.playlistmaker.domain.repository.FavoriteTracksRepository
 import com.practicum.playlistmaker.domain.repository.SearchHistoryRepository
 import com.practicum.playlistmaker.domain.repository.SettingsRepository
 import com.practicum.playlistmaker.domain.repository.TrackRepository
@@ -47,7 +48,7 @@ val dataModule = module {
     single<SearchHistoryRepository> { SearchHistoryRepositoryImpl(get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get(), get()) }
     single{
-        Room.databaseBuilder(androidContext(), AppDataBase::class.java, "play-list-maker-db").build()
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "play-list-maker-db").build()
     }
     factory<MediaPlayerRepository> { MediaPlayerRepositoryImpl(get()) }
 }
@@ -65,6 +66,7 @@ val domainModule = module {
     factory { GetUserAgreementLinkUseCase(get()) }
     factory { FavoriteTracksInteractor(get()) }
     factory<MediaPlayerInteractor> { MediaPlayerInteractorImpl(get()) }
+    factory<FavoriteTracksRepository> { FavoriteTracksRepositoryImpl(get()) }
 }
 
 val viewModelModule = module {

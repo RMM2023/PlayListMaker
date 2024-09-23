@@ -9,7 +9,7 @@ import com.practicum.playlistmaker.domain.model.Track
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(private val interactor: FavoriteTracksInteractor) : ViewModel() {
-    val _favoriteTracks = MutableLiveData<List<Track>>()
+    private val _favoriteTracks = MutableLiveData<List<Track>>()
     val favoriteTracks : LiveData<List<Track>> = _favoriteTracks
     fun loadFavoriteTracks(){
         viewModelScope.launch {
@@ -17,5 +17,8 @@ class FavoriteViewModel(private val interactor: FavoriteTracksInteractor) : View
                 _favoriteTracks.postValue(tracks)
             }
         }
+    }
+    init {
+        loadFavoriteTracks()
     }
 }
