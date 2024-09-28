@@ -38,7 +38,8 @@
             android:src="@drawable/clear_icon"
             android:layout_gravity="center_vertical|end"
             android:paddingEnd="12dp"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            style="@style/clearButtonStyle"/>
 
     </FrameLayout>
     <androidx.recyclerview.widget.RecyclerView

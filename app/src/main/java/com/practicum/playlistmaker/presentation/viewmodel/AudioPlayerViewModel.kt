@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.interactor.FavoriteTracksInteractor
 import com.practicum.playlistmaker.domain.model.Track
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
