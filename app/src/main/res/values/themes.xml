@@ -4,6 +4,7 @@
         <item name="colorPrimary">@color/yp_blue</item>
         <item name="colorSecondary">@color/white</item>
         <item name="playerButtonColor">@color/yp_black</item>
+        <item name="sideButtonColor">@color/yp_black</item>
     </style>
 
     <style name="Theme.PlayListMaker" parent="Base.Theme.PlayListMaker" />

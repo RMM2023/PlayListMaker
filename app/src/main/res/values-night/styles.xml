@@ -123,4 +123,7 @@
     <style name="bottomViewStyle">
         <item name="android:background">@color/white</item>
     </style>
+    <style name="clearButtonStyle">
+        <item name="tint">@color/yp_black</item>
+    </style>
 </resources>

@@ -83,7 +83,6 @@ class SearchViewModel(
     fun addTrackToHistory(track: Track) {
         viewModelScope.launch {
             addTrackToHistoryUseCase.execute(track)
-            loadSearchHistory()
         }
     }
 

@@ -146,4 +146,7 @@
     <style name="BottomNavigationTextAppearance" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">12sp</item>
     </style>
+    <style name="clearButtonStyle">
+        <item name="tint">@color/yp_text_gray</item>
+    </style>
 </resources>

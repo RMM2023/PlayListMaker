@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.presentation.ui.activity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
@@ -44,6 +45,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         // Устанавливаем начальное состояние кнопки воспроизведения
         binding.buttonPlay.setImageResource(R.drawable.play)
+        binding.buttonLike.setOnClickListener{viewModel.onFavoriteClicked()}
     }
 
     private fun observeViewModel() {
@@ -70,6 +72,12 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         viewModel.currentPosition.observe(this) { position ->
             binding.playerTime.text = position
+        }
+        viewModel.isFavorite.observe(this){isFavorite ->
+            binding.buttonLike.setImageResource(
+                if (isFavorite) R.drawable.like_pressed
+                else R.drawable.like
+            )
         }
     }
 
