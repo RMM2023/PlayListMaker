@@ -9,7 +9,6 @@ import androidx.room.Update
 
 @Dao
 interface PlaylistsDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlayList(playList: PlaylistEntity)
 
@@ -17,7 +16,7 @@ interface PlaylistsDao {
     suspend fun addTrackToPlaylist(track: TrackToPlaylistEntity)
 
     @Query("SELECT * FROM playlists")
-    fun getAllPlayLists(): List<PlaylistEntity>
+    suspend fun getAllPlayLists(): List<PlaylistEntity>
 
     @Update
     suspend fun updatePlayList(playList: PlaylistEntity)

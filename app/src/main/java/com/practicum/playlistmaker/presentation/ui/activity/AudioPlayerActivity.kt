@@ -55,11 +55,11 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.trackGenre.text = track.primaryGenreName
             binding.albumName.text = track.collectionName
             binding.trackCountry.text = track.country
-            binding.trackLength.text = viewModel.formatTrackTime(track.trackTimeMillis)
-            binding.trackYear.text = viewModel.formatYear(track.releaseDate)
+            binding.trackLength.text = track.trackTimeMillis?.let { viewModel.formatTrackTime(it) }
+            binding.trackYear.text = track.releaseDate?.let { viewModel.formatYear(it) }
 
             Glide.with(binding.playerCover)
-                .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
+                .load(track.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg"))
                 .placeholder(R.drawable.placeholder)
                 .centerCrop()
                 .transform(RoundedCorners(15))

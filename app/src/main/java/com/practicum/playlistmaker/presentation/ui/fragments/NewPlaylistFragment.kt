@@ -1,60 +1,134 @@
 package com.practicum.playlistmaker.presentation.ui.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.widget.doOnTextChanged
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.FragmentNewPlaylistBinding
+import com.practicum.playlistmaker.presentation.ui.activity.MainActivity
+import com.practicum.playlistmaker.presentation.viewmodel.NewPlaylistViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [NewPlaylistFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class NewPlaylistFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentNewPlaylistBinding? = null
+    private val binding get() = _binding!!
+    private var coverUriSelect: Uri? = null
+    private var showedDialog: Boolean = false
+    private val vm by viewModel<NewPlaylistViewModel>()
+    private lateinit var callback: OnBackPressedCallback
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_playlist, container, false)
+    ): View {
+        _binding = FragmentNewPlaylistBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment NewPlaylistFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            NewPlaylistFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        (activity as? MainActivity)?.hideNavBar()
+
+        vm.savedCoverUri.observe(viewLifecycleOwner) { savedUri ->
+            coverUriSelect = savedUri
+        }
+
+        val chooseCover =
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { previewUri ->
+                if (previewUri != null) {
+                    vm.saveCoverToStorage(previewUri, requireContext())
+                    binding.newPlaylistCover.setImageURI(previewUri)
+                    showedDialog = true
                 }
             }
+
+        binding.newPlaylistCover.setOnClickListener {
+            chooseCover.launch(PickVisualMediaRequest((ActivityResultContracts.PickVisualMedia.ImageOnly)))
+        }
+
+        binding.createButton.setOnClickListener {
+            newPlaylistAdd(coverUriSelect)
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.playlist_created),
+                Toast.LENGTH_SHORT
+            ).show()
+            findNavController().navigateUp()
+        }
+
+        binding.newPlaylistNameEditTxt.doOnTextChanged { text, _, _, _ ->
+            if (text!!.isNotEmpty()) {
+                val color = ContextCompat.getColor(requireContext(), R.color.yp_blue)
+                showedDialog = true
+                binding.createButton.isEnabled = true
+                binding.createButton.setBackgroundColor(color)
+            } else {
+                val color = ContextCompat.getColor(requireContext(), R.color.yp_light_gray)
+                binding.createButton.isEnabled = false
+                binding.createButton.setBackgroundColor(color)
+            }
+
+        }
+
+        binding.backButton.setOnClickListener() {
+            if (showedDialog) {
+                showDialog()
+            } else {
+                findNavController().navigateUp()
+                (activity as? MainActivity)?.showNavBar()
+            }
+        }
+
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (showedDialog) {
+                    showDialog()
+                } else {
+                    (activity as? MainActivity)?.showNavBar()
+                    findNavController().navigateUp()
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    private fun showDialog() {
+        MaterialAlertDialogBuilder(requireContext(), R.style.dialogStyle)
+            .setTitle(getString(R.string.cancel_playlist_creation))
+            .setMessage(getString(R.string.all_unsaved_data_will_be_lostall_unsaved_data_will_be_lost))
+            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
+            }
+            .setPositiveButton(getString(R.string.exit)) { _, _ ->
+                findNavController().navigateUp()
+                (activity as? MainActivity)?.showNavBar()
+
+            }
+            .show()
+    }
+    private fun newPlaylistAdd(coverUri: Uri?) {
+        val playlistName = binding.newPlaylistNameEditTxt.text.toString()
+        val playlistDescription = binding.newPlaylistDescriptionEditTxt.text.toString()
+        vm.newPlaylist(playlistName, playlistDescription, coverUri)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        if (::callback.isInitialized) {
+            callback.remove()
+        }
     }
 }

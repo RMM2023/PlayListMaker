@@ -59,7 +59,7 @@ android {
         implementation("com.squareup.retrofit2:converter-gson:2.9.0")
         implementation("io.insert-koin:koin-android:3.4.0")
 
-        val roomVersion = "2.5.1"
+        val roomVersion = "2.6.1"
         implementation("androidx.room:room-runtime:$roomVersion")
         kapt("androidx.room:room-compiler:$roomVersion")
         implementation("androidx.room:room-ktx:$roomVersion")

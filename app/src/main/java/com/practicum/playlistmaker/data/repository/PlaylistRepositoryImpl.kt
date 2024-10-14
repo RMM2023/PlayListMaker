@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Environment
 import com.practicum.playlistmaker.data.db.AppDatabase
 import com.practicum.playlistmaker.data.db.PlaylistEntity
+import com.practicum.playlistmaker.data.db.PlaylistsDatabase
 import com.practicum.playlistmaker.data.db.PlaylistsDbConverter
 import com.practicum.playlistmaker.data.db.TracksToPlaylistConverter
 import com.practicum.playlistmaker.domain.model.Playlist
@@ -19,29 +20,30 @@ import java.io.FileOutputStream
 import java.util.Date
 import java.util.UUID
 
+
 class PlaylistsRepositoryImpl(
-    private val appDatabasePlaylists: AppDatabase,
+    private val playlistsDatabase: PlaylistsDatabase,
     private val playlistsDbConverter: PlaylistsDbConverter,
     private val tracksToPlaylistConverter: TracksToPlaylistConverter
 ) : PlaylistsRepository {
     override suspend fun getPlaylists(): Flow<List<Playlist>> = flow {
-        val playlists = appDatabasePlaylists.playlistsDao().getAllPlayLists()
+        val playlists = playlistsDatabase.playlistsDao().getAllPlayLists()
         emit(converterForEntity(playlists))
     }
 
     override suspend fun addPlaylist(playlist: Playlist) {
-        appDatabasePlaylists.playlistsDao().insertPlayList(playlistsDbConverter.map(playlist))
+        playlistsDatabase.playlistsDao().insertPlayList(playlistsDbConverter.map(playlist))
     }
 
     override suspend fun addTrackToPlaylist(playList: Playlist, track: Track) {
-        val trackId = track.trackId.toLong()
+        val trackId = track.trackId?.toLong()
 
         if (trackId == 0L) {
             throw IllegalArgumentException("TrackID is 0")
         }
         addPlaylist(playlist = playList)
         val addTime = Date().time
-        appDatabasePlaylists.playlistsDao()
+        playlistsDatabase.playlistsDao()
             .addTrackToPlaylist(tracksToPlaylistConverter.map(track, addTime))
     }
 
@@ -63,13 +65,13 @@ class PlaylistsRepositoryImpl(
 
     override suspend fun getPlaylistById(playlistId: Int): Playlist {
         return converterForPlaylistEntity(
-            appDatabasePlaylists.playlistsDao().getPlaylistById(playlistId)
+            playlistsDatabase.playlistsDao().getPlaylistById(playlistId)
         )
     }
 
     override suspend fun deletePlaylist(playlistId: Int) {
         val playlist = getPlaylistById(playlistId)
-        appDatabasePlaylists.playlistsDao().deletePlaylist(playlistsDbConverter.map(playlist))
+        playlistsDatabase.playlistsDao().deletePlaylist(playlistsDbConverter.map(playlist))
     }
 
     override suspend fun newPlaylist(
