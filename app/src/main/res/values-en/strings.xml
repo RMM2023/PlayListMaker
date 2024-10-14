@@ -28,4 +28,10 @@
     <string name="mediateka">Mediateka</string>
     <string name="SelectedTracks">Selected tracks</string>
     <string name="Playlists">Playlists</string>
+    <string name="new_playlist_button">New Playlist</string>
+    <string name="playlist_created">Playlist created</string>
+    <string name="cancel_playlist_creation">"Exit Playlist creation? "</string>
+    <string name="all_unsaved_data_will_be_lostall_unsaved_data_will_be_lost">All unsaved data will be lost</string>
+    <string name="cancel">Cancel</string>
+    <string name="exit">Exit</string>
 </resources>

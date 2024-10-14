@@ -46,7 +46,7 @@ class AudioPlayerViewModel(
 
     fun initTrack(track: Track) {
         _track.value = track
-        mediaPlayerInteractor.initMediaPlayer(track.previewUrl)
+        track.previewUrl?.let { mediaPlayerInteractor.initMediaPlayer(it) }
         _isPlaying.value = false
         _currentPosition.value = "00:00"
         _currentTrack.value = track
@@ -95,7 +95,7 @@ class AudioPlayerViewModel(
         stopUpdatingPosition()
     }
 
-    fun formatTrackTime(timeMillis: Int): String {
+    fun formatTrackTime(timeMillis: Long): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(timeMillis)
     }
 

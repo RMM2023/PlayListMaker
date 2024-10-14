@@ -14,7 +14,7 @@ class FavoriteTracksInteractor(val favoriteTracksRepository: FavoriteTracksRepos
     fun getFavoriteTracks() : Flow<List<Track>>{
         return favoriteTracksRepository.getFavoriteTracks()
     }
-    fun getFavoriteTracksIds() : Flow<List<String>>{
+    fun getFavoriteTracksIds() : Flow<List<Int>>{
         return favoriteTracksRepository.getFavoriteTracksIds()
     }
 }

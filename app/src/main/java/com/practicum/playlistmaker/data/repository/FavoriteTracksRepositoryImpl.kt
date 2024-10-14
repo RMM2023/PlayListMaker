@@ -8,6 +8,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class FavoriteTracksRepositoryImpl(val appDatabase: AppDatabase) : FavoriteTracksRepository {
     override suspend fun insertTrack(track : Track){
@@ -17,7 +18,7 @@ class FavoriteTracksRepositoryImpl(val appDatabase: AppDatabase) : FavoriteTrack
     }
     override suspend fun deleteTracK(track: Track){
         GlobalScope.launch {
-            appDatabase.favoriteTracksDao().deleteTracK(track.toFavoriteTrackEntity())
+            appDatabase.favoriteTracksDao().deleteTrack(track.toFavoriteTrackEntity())
         }
     }
     override fun getFavoriteTracks() : Flow<List<Track>>{
@@ -25,7 +26,7 @@ class FavoriteTracksRepositoryImpl(val appDatabase: AppDatabase) : FavoriteTrack
             list.map { it.toTrack() }
         }
     }
-    override fun getFavoriteTracksIds() : Flow<List<String>>{
+    override fun getFavoriteTracksIds() : Flow<List<Int>> {
         return appDatabase.favoriteTracksDao().getFavoriteTracksIds()
     }
 
@@ -40,7 +41,8 @@ class FavoriteTracksRepositoryImpl(val appDatabase: AppDatabase) : FavoriteTrack
             releaseDate = releaseDate,
             primaryGenreName = primaryGenreName,
             country = country,
-            previewUrl = previewUrl
+            previewUrl = previewUrl,
+            insertTime = Date().time
         )
     }
 
@@ -56,7 +58,7 @@ class FavoriteTracksRepositoryImpl(val appDatabase: AppDatabase) : FavoriteTrack
             primaryGenreName = primaryGenreName,
             country = country,
             previewUrl = previewUrl,
-            isFavorite = true
+            insertTime = Date().time
         )
     }
 }

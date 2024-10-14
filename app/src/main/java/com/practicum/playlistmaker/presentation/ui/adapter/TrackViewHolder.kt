@@ -18,7 +18,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackTime = itemView.findViewById<TextView>(R.id.track_time)
 
     fun bind(track: Track) {
-        if (track.artworkUrl100.isNotEmpty()) {
+        if (track.artworkUrl100?.isNotEmpty() == true) {
             Glide.with(trackImage)
                 .load(track.artworkUrl100)
                 .centerInside()
