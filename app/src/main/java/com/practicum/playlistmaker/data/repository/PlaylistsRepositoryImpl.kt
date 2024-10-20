@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
-import com.practicum.playlistmaker.data.db.AppDatabase
 import com.practicum.playlistmaker.data.db.PlaylistEntity
 import com.practicum.playlistmaker.data.db.PlaylistsDatabase
 import com.practicum.playlistmaker.data.db.PlaylistsDbConverter
@@ -35,16 +34,15 @@ class PlaylistsRepositoryImpl(
         playlistsDatabase.playlistsDao().insertPlayList(playlistsDbConverter.map(playlist))
     }
 
-    override suspend fun addTrackToPlaylist(playList: Playlist, track: Track) {
-        val trackId = track.trackId?.toLong()
-
-        if (trackId == 0L) {
-            throw IllegalArgumentException("TrackID is 0")
+    override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+        val trackId = track.trackId?.toLong() ?: throw IllegalArgumentException("TrackID is null")
+        if (playlist.tracksIds.contains(trackId)) {
+            throw IllegalStateException("Track already exists in playlist")
         }
-        addPlaylist(playlist = playList)
-        val addTime = Date().time
-        playlistsDatabase.playlistsDao()
-            .addTrackToPlaylist(tracksToPlaylistConverter.map(track, addTime))
+        playlist.tracksIds.add(trackId)
+        playlist.tracksAmount++
+        playlistsDatabase.playlistsDao().updatePlayList(playlistsDbConverter.map(playlist))
+        playlistsDatabase.playlistsDao().addTrackToPlaylist(tracksToPlaylistConverter.map(track, Date().time))
     }
 
     override suspend fun saveCoverToPrivateStorage(previewUri: Uri, context: Context): Uri? {

@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    style="@style/BackgroundStyle"
+
     android:layout_height="match_parent">
 
 
@@ -14,18 +16,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <ImageButton
+        <Button
             android:id="@+id/backButton"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:src="@drawable/arrow_left"/>
+            style="@style/BackButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            app:iconSize="20dp"
+            android:gravity="center"
+            app:icon="@drawable/arrow_left"
+            app:layout_constraintBottom_toTopOf="@id/player_cover"
+            app:layout_constraintStart_toEndOf="@id/guideline_left"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="8dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/mediateka"
+            android:text="Новый плейлист"
             android:textSize="22sp"
             android:fontFamily="@font/ys_display_medium"
             android:textFontWeight="500"
@@ -34,18 +42,29 @@
             style="@style/TitleText"/>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/new_playlist_cover"
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view_new_playlist"
+        style="@style/BackgroundTintStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="26dp"
+        app:cardCornerRadius="8dp"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="24dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/playlist_placeholder"
+        app:cardElevation="0dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topPanel" />
+        app:layout_constraintTop_toBottomOf="@id/topPanel">
+
+        <ImageView
+            android:id="@+id/new_playlist_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/playlist_placeholder"/>
+    </androidx.cardview.widget.CardView>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/new_playlist_name_txt_layout"
@@ -59,7 +78,7 @@
         app:hintTextColor="@color/yp_blue_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/new_playlist_cover">
+        app:layout_constraintTop_toBottomOf="@id/card_view_new_playlist">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/new_playlist_name_edit_txt"

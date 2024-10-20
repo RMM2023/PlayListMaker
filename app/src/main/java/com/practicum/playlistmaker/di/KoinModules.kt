@@ -91,7 +91,7 @@ val domainModule = module {
 val viewModelModule = module {
     viewModel { SearchViewModel(get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { AudioPlayerViewModel(get(), get()) }
+    viewModel { AudioPlayerViewModel(get(), get(), get()) }
     viewModel { FavoriteViewModel(get()) }
     viewModel { MediaViewModel()}
     viewModel { PlayListViewModel(get())}

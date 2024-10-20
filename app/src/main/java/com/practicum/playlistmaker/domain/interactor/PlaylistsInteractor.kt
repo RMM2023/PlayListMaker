@@ -16,8 +16,8 @@ class PlaylistsInteractor(private val playlistsRepository: PlaylistsRepository) 
         playlistsRepository.addPlaylist(playlist)
     }
 
-    suspend fun addTrackToPlaylist(playList: Playlist, track: Track) {
-        playlistsRepository.addTrackToPlaylist(playList, track)
+    suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+        playlistsRepository.addTrackToPlaylist(playlist, track)
     }
 
     suspend fun saveCoverToPrivateStorage(previewUri: Uri, context: Context): Uri? {
@@ -43,4 +43,6 @@ class PlaylistsInteractor(private val playlistsRepository: PlaylistsRepository) 
     suspend fun getCover(): String {
         return playlistsRepository.getCover()
     }
+
+
 }

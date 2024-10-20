@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.interactor.FavoriteTracksInteractor
+import com.practicum.playlistmaker.domain.interactor.PlaylistsInteractor
+import com.practicum.playlistmaker.domain.model.Playlist
 import com.practicum.playlistmaker.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -19,7 +21,8 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
-    private val favoriteTracksInteractor: FavoriteTracksInteractor
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
 
     private val _track = MutableLiveData<Track>()
@@ -39,9 +42,41 @@ class AudioPlayerViewModel(
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite : LiveData<Boolean> = _isFavorite
 
+    private val _playlists = MutableLiveData<List<Playlist>>()
+    val playlists: LiveData<List<Playlist>> = _playlists
+
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String> = _message
+
     init {
         _isPlaying.value = false
         _currentPosition.value = "00:00"
+        refreshPlaylists()
+    }
+
+
+    fun refreshPlaylists() {
+        viewModelScope.launch {
+            playlistsInteractor.getPlaylists().collect { playlistsList ->
+                _playlists.value = playlistsList
+            }
+        }
+    }
+
+    fun addTrackToPlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            val track = _track.value ?: return@launch
+            try {
+                playlistsInteractor.addTrackToPlaylist(playlist, track)
+                _message.value = "Добавлено в плейлист ${playlist.name}"
+            } catch (e: Exception) {
+                if (e is IllegalStateException && e.message == "Track already exists in playlist") {
+                    _message.value = "Трек уже добавлен в плейлист ${playlist.name}"
+                } else {
+                    _message.value = "Ошибка при добавлении трека в плейлист"
+                }
+            }
+        }
     }
 
     fun initTrack(track: Track) {

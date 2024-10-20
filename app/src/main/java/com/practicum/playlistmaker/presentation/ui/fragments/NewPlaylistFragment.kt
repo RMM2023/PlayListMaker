@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -83,12 +84,19 @@ class NewPlaylistFragment : Fragment() {
 
         }
 
-        binding.backButton.setOnClickListener() {
+        binding.backButton.setOnClickListener {
             if (showedDialog) {
                 showDialog()
             } else {
-                findNavController().navigateUp()
-                (activity as? MainActivity)?.showNavBar()
+                parentFragmentManager.popBackStack()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (showedDialog) {
+                showDialog()
+            } else {
+                parentFragmentManager.popBackStack()
             }
         }
 
@@ -109,15 +117,13 @@ class NewPlaylistFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext(), R.style.dialogStyle)
             .setTitle(getString(R.string.cancel_playlist_creation))
             .setMessage(getString(R.string.all_unsaved_data_will_be_lostall_unsaved_data_will_be_lost))
-            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
-            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
             .setPositiveButton(getString(R.string.exit)) { _, _ ->
-                findNavController().navigateUp()
-                (activity as? MainActivity)?.showNavBar()
-
+                parentFragmentManager.popBackStack()
             }
             .show()
     }
+
     private fun newPlaylistAdd(coverUri: Uri?) {
         val playlistName = binding.newPlaylistNameEditTxt.text.toString()
         val playlistDescription = binding.newPlaylistDescriptionEditTxt.text.toString()
