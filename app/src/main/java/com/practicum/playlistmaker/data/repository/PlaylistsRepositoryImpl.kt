@@ -8,6 +8,7 @@ import android.os.Environment
 import com.practicum.playlistmaker.data.db.PlaylistEntity
 import com.practicum.playlistmaker.data.db.PlaylistsDatabase
 import com.practicum.playlistmaker.data.db.PlaylistsDbConverter
+import com.practicum.playlistmaker.data.db.TrackToPlaylistEntity
 import com.practicum.playlistmaker.data.db.TracksToPlaylistConverter
 import com.practicum.playlistmaker.domain.model.Playlist
 import com.practicum.playlistmaker.domain.model.Track
@@ -94,6 +95,14 @@ class PlaylistsRepositoryImpl(
         return "cover_${UUID.randomUUID()}.jpg"
     }
 
+    override suspend fun getAllTracks(tracksIds: List<Long>): List<Track> {
+        val playlist = playlistsDatabase.playlistsDao().getAllPlaylistTracks()
+        return playlist
+            .filter { it.trackId?.toLong() in tracksIds }
+            .sortedByDescending { it.insertTime }
+            .map { convertFromTrackEntity(it) }
+    }
+
     private fun converterForEntity(playlist: List<PlaylistEntity>): List<Playlist> {
         return playlist.map { playlist -> playlistsDbConverter.map(playlist) }
     }
@@ -101,4 +110,62 @@ class PlaylistsRepositoryImpl(
     private fun converterForPlaylistEntity(playlist: PlaylistEntity): Playlist {
         return playlistsDbConverter.map(playlist)
     }
+
+    private fun convertFromTrackEntity(trackEntity: TrackToPlaylistEntity): Track {
+        val addTime = Date().time
+        return tracksToPlaylistConverter.map(trackEntity, addTime)
+    }
+
+    override suspend fun deleteTrackFromPlaylist(playlistId: Int, trackId: Long) {
+        val playlist = getPlaylistById(playlistId)
+        playlist.tracksIds.remove(trackId)
+        updatePlaylist(playlist)
+        if (!checkTrackGlobally(trackId)) {
+            deleteTrackIfNoMatch(trackId)
+        }
+    }
+
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        playlistsDatabase.playlistsDao().updatePlayList(playlistsDbConverter.map(playlist))
+    }
+
+    private suspend fun deleteTrackIfNoMatch(trackId: Long) {
+        playlistsDatabase.playlistsDao().deleteTrackById(trackId)
+    }
+
+    private suspend fun checkTrackGlobally(trackId: Long): Boolean {
+        val anyPlaylists = playlistsDatabase.playlistsDao().getAllPlayLists()
+        for (playlist in anyPlaylists) {
+            if (trackId in playlist.tracksIds) {
+                return true
+            }
+        }
+        return false
+    }
+
+    override suspend fun trackCountDecrement(playlistId: Int) {
+        playlistsDatabase.playlistsDao().decrementPlaylistTrackCount(playlistId)
+    }
+
+    override suspend fun modifyData(
+        name: String,
+        description: String,
+        cover: String,
+        coverUri: Uri?,
+        originalPlayList: Playlist
+    ) {
+        updatePlaylist(
+            Playlist(
+                id = originalPlayList.id,
+                name = name,
+                description = description,
+                coverPath = cover,
+                tracksIds = originalPlayList.tracksIds,
+                tracksAmount = originalPlayList.tracksAmount,
+                imageUri = coverUri?.toString() ?: originalPlayList.imageUri
+            )
+        )
+    }
+
+
 }

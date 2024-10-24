@@ -27,8 +27,10 @@ import com.practicum.playlistmaker.domain.repository.SettingsRepository
 import com.practicum.playlistmaker.domain.repository.TrackRepository
 import com.practicum.playlistmaker.domain.usecase.*
 import com.practicum.playlistmaker.presentation.viewmodel.AudioPlayerViewModel
+import com.practicum.playlistmaker.presentation.viewmodel.CurrentPlaylistViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.FavoriteViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.MediaViewModel
+import com.practicum.playlistmaker.presentation.viewmodel.ModifyPlaylistViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.NewPlaylistViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.PlayListViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.SearchViewModel
@@ -96,4 +98,6 @@ val viewModelModule = module {
     viewModel { MediaViewModel()}
     viewModel { PlayListViewModel(get())}
     viewModel { NewPlaylistViewModel(get()) }
+    viewModel { CurrentPlaylistViewModel(get()) }
+    viewModel { ModifyPlaylistViewModel(get()) }
 }

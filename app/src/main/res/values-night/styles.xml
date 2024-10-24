@@ -163,4 +163,21 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">14sp</item>
     </style>
+    <style name="BottomSheetBackground">
+        <item name="android:backgroundTint">@color/yp_black</item>
+    </style>
+    <style name="bottomSheetLineStyle">
+        <item name="android:backgroundTint">@color/white</item>
+    </style>
+    <style name="NoTracksInPlaylist">
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="TrackArtist">
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
 </resources>

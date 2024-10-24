@@ -44,5 +44,20 @@ class PlaylistsInteractor(private val playlistsRepository: PlaylistsRepository) 
         return playlistsRepository.getCover()
     }
 
+    suspend fun getAllTracks(tracksIds: List<Long>): List<Track>{
+        return playlistsRepository.getAllTracks(tracksIds)
+    }
+
+    suspend fun deleteTrackFromPlaylist(playlistId: Int, trackId: Long){
+        return playlistsRepository.deleteTrackFromPlaylist(playlistId,trackId)
+    }
+
+    suspend fun trackCountDecrement(playlistId: Int){
+        return playlistsRepository.trackCountDecrement(playlistId)
+    }
+
+    suspend fun modifyData(name: String, description: String,cover: String, coverUri: Uri?,originalPlayList: Playlist) {
+        playlistsRepository.modifyData(name, description, cover, coverUri, originalPlayList)
+    }
 
 }

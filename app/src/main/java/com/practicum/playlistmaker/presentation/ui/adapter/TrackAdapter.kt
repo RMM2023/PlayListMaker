@@ -6,8 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.domain.model.Track
 
-class TrackAdapter(var trackList: MutableList<Track>, private var itemClickListener: (Track) -> Unit) :
-    RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(
+    var trackList: MutableList<Track>,
+    var itemClickListener: ((Track) -> Unit)? = null,
+) : RecyclerView.Adapter<TrackViewHolder>() {
+
+    lateinit var itemLongClickListener: ((Track) -> Unit)
 
     fun updateList(trackList: MutableList<Track>) {
         this.trackList = trackList
@@ -31,7 +35,11 @@ class TrackAdapter(var trackList: MutableList<Track>, private var itemClickListe
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener {
-            itemClickListener(trackList[position])
+            itemClickListener?.let { it1 -> it1(trackList[position]) }
+        }
+        holder.itemView.setOnLongClickListener {
+            itemLongClickListener.invoke(trackList[position])
+            true
         }
     }
 }
