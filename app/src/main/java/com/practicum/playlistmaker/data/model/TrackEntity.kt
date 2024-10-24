@@ -1,10 +1,10 @@
 package com.practicum.playlistmaker.data.model
 
 data class TrackEntity(
-    val trackId : String, //Идентификатор
+    val trackId : Int, //Идентификатор
     val trackName: String, // Название композиции
     val artistName: String, // Имя исполнителя
-    val trackTimeMillis: Int, // Продолжительность трека
+    val trackTimeMillis: Long, // Продолжительность трека
     val artworkUrl100: String, // Ссылка на изображение обложки
     val collectionName: String,
     val releaseDate: String,

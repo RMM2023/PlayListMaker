@@ -6,16 +6,22 @@ import androidx.room.Room
 import com.google.gson.Gson
 import com.practicum.playlistmaker.data.ResourceManager
 import com.practicum.playlistmaker.data.db.AppDatabase
+import com.practicum.playlistmaker.data.db.PlaylistsDatabase
+import com.practicum.playlistmaker.data.db.PlaylistsDbConverter
+import com.practicum.playlistmaker.data.db.TracksToPlaylistConverter
 import com.practicum.playlistmaker.data.remote.api.ITunesApiService
 import com.practicum.playlistmaker.data.repository.FavoriteTracksRepositoryImpl
 import com.practicum.playlistmaker.data.repository.MediaPlayerRepositoryImpl
+import com.practicum.playlistmaker.data.repository.PlaylistsRepositoryImpl
 import com.practicum.playlistmaker.data.repository.SearchHistoryRepositoryImpl
 import com.practicum.playlistmaker.data.repository.SettingsRepositoryImpl
 import com.practicum.playlistmaker.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.api.MediaPlayerRepository
 import com.practicum.playlistmaker.domain.interactor.FavoriteTracksInteractor
+import com.practicum.playlistmaker.domain.interactor.PlaylistsInteractor
 import com.practicum.playlistmaker.domain.repository.FavoriteTracksRepository
+import com.practicum.playlistmaker.domain.repository.PlaylistsRepository
 import com.practicum.playlistmaker.domain.repository.SearchHistoryRepository
 import com.practicum.playlistmaker.domain.repository.SettingsRepository
 import com.practicum.playlistmaker.domain.repository.TrackRepository
@@ -23,6 +29,7 @@ import com.practicum.playlistmaker.domain.usecase.*
 import com.practicum.playlistmaker.presentation.viewmodel.AudioPlayerViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.FavoriteViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.MediaViewModel
+import com.practicum.playlistmaker.presentation.viewmodel.NewPlaylistViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.PlayListViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.SearchViewModel
 import com.practicum.playlistmaker.presentation.viewmodel.SettingsViewModel
@@ -48,9 +55,18 @@ val dataModule = module {
     single<SearchHistoryRepository> { SearchHistoryRepositoryImpl(get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get(), get()) }
     single{
-        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "play-list-maker-db").build()
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "play-list-maker-db")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+    single {
+        Room.databaseBuilder(androidContext(), PlaylistsDatabase::class.java, "playlists-db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
     factory<MediaPlayerRepository> { MediaPlayerRepositoryImpl(get()) }
+    single<PlaylistsRepository> { PlaylistsRepositoryImpl(get(),get(),get())}
+
 }
 
 
@@ -67,13 +83,17 @@ val domainModule = module {
     factory { FavoriteTracksInteractor(get()) }
     factory<MediaPlayerInteractor> { MediaPlayerInteractorImpl(get()) }
     factory<FavoriteTracksRepository> { FavoriteTracksRepositoryImpl(get()) }
+    factory { PlaylistsInteractor(get()) }
+    factory { PlaylistsDbConverter() }
+    factory { TracksToPlaylistConverter() }
 }
 
 val viewModelModule = module {
     viewModel { SearchViewModel(get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { AudioPlayerViewModel(get(), get()) }
+    viewModel { AudioPlayerViewModel(get(), get(), get()) }
     viewModel { FavoriteViewModel(get()) }
     viewModel { MediaViewModel()}
-    viewModel { PlayListViewModel()}
+    viewModel { PlayListViewModel(get())}
+    viewModel { NewPlaylistViewModel(get()) }
 }
