@@ -4,6 +4,7 @@ import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,11 +15,14 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
+import com.practicum.playlistmaker.CURRENT_TRACK
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentCurrentPlaylistBinding
 import com.practicum.playlistmaker.domain.model.Playlist
 import com.practicum.playlistmaker.domain.model.Track
-import com.practicum.playlistmaker.presentation.ui.activity.MainActivity
+import com.practicum.playlistmaker.presentation.ui.activity.AudioPlayerActivity
+import com.practicum.playlistmaker.presentation.ui.activity.NavigationBarController
 import com.practicum.playlistmaker.presentation.ui.adapter.TrackAdapter
 import com.practicum.playlistmaker.presentation.viewmodel.CurrentPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,9 +56,9 @@ class CurrentPlaylistFragment : Fragment() {
             showDialog(playlist, it.trackId?.toLong() ?: 0)
         }
 
-        (activity as? MainActivity)?.hideNavBar()
+        (activity as? NavigationBarController)?.hideNavBar()
 
-        binding.TracksRV.adapter = adapter
+        binding.rvCurrentPlaylist.adapter = adapter
 
         renderCurrentPlaylist()
 
@@ -62,11 +66,11 @@ class CurrentPlaylistFragment : Fragment() {
         val screenHeight = resources.displayMetrics.heightPixels
         val allowableHeight = (screenHeight * 0.25).toInt()
         val bottomSheetBehavior =
-            BottomSheetBehavior.from(binding.BottomMenuLayout).apply {
+            BottomSheetBehavior.from(binding.bottomMenuCurrentPlaylist).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
         val bottomSheetBehaviorPlaylist =
-            BottomSheetBehavior.from(binding.BottomMenuLayout).apply {
+            BottomSheetBehavior.from(binding.playlistBottomMenuTracks).apply {
                 state = BottomSheetBehavior.STATE_COLLAPSED
             }
 
@@ -78,13 +82,13 @@ class CurrentPlaylistFragment : Fragment() {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         bottomSheetBehaviorPlaylist.isHideable = false
-                        binding.BottomSheetOverlay.visibility = View.GONE
+                        binding.menuBottomSheetOverlay.visibility = View.GONE
                     }
 
                     else -> {
                         bottomSheetBehaviorPlaylist.isHideable = true
                         bottomSheetBehaviorPlaylist.state = BottomSheetBehavior.STATE_HIDDEN
-                        binding.BottomSheetOverlay.visibility = View.VISIBLE
+                        binding.menuBottomSheetOverlay.visibility = View.VISIBLE
                     }
                 }
             }
@@ -96,14 +100,14 @@ class CurrentPlaylistFragment : Fragment() {
         val bundle = Bundle().apply {
             putParcelable("modify_playlist", playlist)
         }
-        binding.CurrentPlaylistEdit.setOnClickListener {
+        binding.editMenuCurrentPlaylist.setOnClickListener {
             findNavController().navigate(
                 R.id.action_currentPlaylistFragment_to_modifyPlaylistFragment,
                 bundle
             )
         }
 
-        binding.Toolbar.setNavigationOnClickListener {
+        binding.toolbarCurrentPlaylist.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
         val callback = object : OnBackPressedCallback(true) {
@@ -113,36 +117,38 @@ class CurrentPlaylistFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        binding.ShareImage.setOnClickListener {
+        binding.shareCurrentPlaylist.setOnClickListener {
             toShare()
         }
 
-        binding.CurrentPlaylistShare.setOnClickListener {
+        binding.shareMenuCurrentPlaylist.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             toShare()
         }
 
-        binding.CurrentPlaylistDeletae.setOnClickListener {
+        binding.deleteMenuCurrentPlaylist.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             toDelete()
         }
 
-        binding.MenuImage.setOnClickListener {
+        binding.menuDotsCurrentPlaylist.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            binding.CurrentPlaylistTitle.text = playlist.name
-            binding.CurrentPlaylistTracksCount.text = countTracks(playlist.tracksAmount)
+            binding.titleBottomCurrentPlaylist.text = playlist.name
+            binding.trackAmountBottomCurrentPlaylist.text = countTracks(playlist.tracksAmount)
         }
 
         vm.getPlaylistById(playlistId)
 
         vm.observeTrackCount().observe(viewLifecycleOwner) { trackCount ->
-            binding.CurrentPlaylistTracksCount.text = countTracks(trackCount)
+            binding.trackAmountCurrentPlaylist.text = countTracks(trackCount)
         }
 
         vm.observePlaylistAllTime().observe(viewLifecycleOwner) {
             vm.playlistAllTime()
             if (it != null) {
                 renderDuration(it)
+            } else {
+                Log.d("no tracks to count", "there is no track time to count")
             }
         }
 
@@ -163,9 +169,9 @@ class CurrentPlaylistFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (playlist.tracksAmount == 0) {
-            binding.NoTracksText.visibility = View.VISIBLE
+            binding.noTracksInPlaylist.visibility = View.VISIBLE
         } else {
-            binding.NoTracksText.visibility = View.GONE
+            binding.noTracksInPlaylist.visibility = View.GONE
         }
 
         val playlistId = playlist.id
@@ -182,7 +188,7 @@ class CurrentPlaylistFragment : Fragment() {
         val duration = SimpleDateFormat("mm", Locale.getDefault()).format(time).toInt()
         val formattedDuration =
             resources.getQuantityString(R.plurals.minutes, duration, duration)
-        binding.AllTime.text = formattedDuration
+        binding.fullTimeCurrentPlaylist.text = formattedDuration
     }
 
     private fun toDelete() {
@@ -238,22 +244,22 @@ class CurrentPlaylistFragment : Fragment() {
     }
 
     private fun renderCurrentPlaylist() {
-        binding.TrackCount.text = countTracks(playlist.tracksAmount)
-        binding.PlaylistTitle.text = playlist.name
-        binding.PlaylistDescription.text = playlist.description
+        binding.trackAmountCurrentPlaylist.text = countTracks(playlist.tracksAmount)
+        binding.titleCurrentPlaylist.text = playlist.name
+        binding.descriptionTextviewCurrentPlaylist.text = playlist.description
 
         val imageUri = playlist.imageUri.let { Uri.parse(it) }
         Glide.with(requireContext())
             .load(imageUri)
             .placeholder(R.drawable.placeholder)
             .centerCrop()
-            .into(binding.PlaylistImage)
+            .into(binding.imageNewPlaylistImage)
 
         Glide.with(requireContext())
             .load(imageUri)
             .placeholder(R.drawable.placeholder)
             .centerCrop()
-            .into(binding.CurrentPlaylistCover)
+            .into(binding.coverBottomCurrentPlaylist)
     }
 
     private fun countTracks(count: Int): String {
@@ -263,17 +269,15 @@ class CurrentPlaylistFragment : Fragment() {
     }
 
     private fun showContent(tracks: List<Track>) {
-        binding.TracksRV.visibility = View.VISIBLE
+        binding.rvCurrentPlaylist.visibility = View.VISIBLE
         adapter.updateList(tracks.toMutableList())
     }
 
     private fun openAudioPlayer(track: Track) {
-        val bundle = Bundle()
-        bundle.putParcelable("SEARCH_QUERY_HISTORY", track)
-        findNavController().navigate(
-            R.id.action_currentPlaylistFragment_to_audioPlayerFragment,
-            bundle
-        )
+        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
+        val trackJson = Gson().toJson(track)
+        intent.putExtra(CURRENT_TRACK, trackJson)
+        startActivity(intent)
     }
 
     private fun showDialog(playlist: Playlist, trackId: Long) {
@@ -282,7 +286,7 @@ class CurrentPlaylistFragment : Fragment() {
             .setNegativeButton(getString(R.string.No)) { dialog, witch -> }
             .setPositiveButton(getString(R.string.Yes)) { dialog, witch ->
                 vm.deleteTrackFromPlaylist(playlist, trackId)
-                binding.CurrentPlaylistTracksCount.text =
+                binding.trackAmountCurrentPlaylist.text =
                     countTracks(vm.observePlaylistTracks().value?.size ?: 0)
                 val position = adapter.trackList.indexOfFirst { it.trackId?.toLong() == trackId }
                 if (position != -1) {

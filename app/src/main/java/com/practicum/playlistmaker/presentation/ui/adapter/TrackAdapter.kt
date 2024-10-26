@@ -11,7 +11,7 @@ class TrackAdapter(
     var itemClickListener: ((Track) -> Unit)? = null,
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
-    lateinit var itemLongClickListener: ((Track) -> Unit)
+    var itemLongClickListener: ((Track) -> Unit) = {}
 
     fun updateList(trackList: MutableList<Track>) {
         this.trackList = trackList

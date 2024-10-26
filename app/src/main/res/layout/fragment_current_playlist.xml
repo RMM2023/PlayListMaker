@@ -11,7 +11,7 @@
         android:background="@color/yp_light_gray">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/CoverImage"
+            android:id="@+id/cover_card_view_current_playlist"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:backgroundTint="@android:color/transparent"
@@ -19,10 +19,10 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Toolbar">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/PlaylistImage"
+                android:id="@+id/image_new_playlist_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -30,7 +30,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/Toolbar"
+            android:id="@+id/toolbar_current_playlist"
             style="@style/ToolbarCurrentPlaylist"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -40,82 +40,82 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/PlaylistTitle"
+            android:id="@+id/title_current_playlist"
             style="@style/TitleCurrentPlaylist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/CoverImage"
+            app:layout_constraintTop_toBottomOf="@id/cover_card_view_current_playlist"
             tools:text="Название" />
 
         <TextView
-            android:id="@+id/PlaylistDescription"
+            android:id="@+id/description_textview_current_playlist"
             style="@style/DescriptionStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/PlaylistTitle"
+            app:layout_constraintTop_toBottomOf="@id/title_current_playlist"
             tools:text="Описание" />
 
         <TextView
-            android:id="@+id/AllTime"
+            android:id="@+id/full_time_current_playlist"
             style="@style/DescriptionStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/PlaylistDescription"
+            app:layout_constraintTop_toBottomOf="@id/description_textview_current_playlist"
             tools:text="50 минут" />
 
         <ImageView
-            android:id="@+id/DotImage"
+            android:id="@+id/dot_current_playlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:src="@drawable/dot"
-            app:layout_constraintBottom_toBottomOf="@id/AllTime"
-            app:layout_constraintStart_toEndOf="@id/AllTime"
-            app:layout_constraintTop_toTopOf="@id/AllTime" />
+            app:layout_constraintBottom_toBottomOf="@id/full_time_current_playlist"
+            app:layout_constraintStart_toEndOf="@id/full_time_current_playlist"
+            app:layout_constraintTop_toTopOf="@id/full_time_current_playlist" />
 
         <TextView
-            android:id="@+id/TrackCount"
+            android:id="@+id/track_amount_current_playlist"
             style="@style/DescriptionStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/DotImage"
-            app:layout_constraintTop_toTopOf="@id/AllTime"
+            app:layout_constraintStart_toEndOf="@id/dot_current_playlist"
+            app:layout_constraintTop_toTopOf="@id/full_time_current_playlist"
             tools:text="50 треков" />
 
         <ImageView
-            android:id="@+id/ShareImage"
+            android:id="@+id/share_current_playlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:src="@drawable/black_share"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/AllTime" />
+            app:layout_constraintTop_toBottomOf="@id/full_time_current_playlist" />
 
         <ImageView
-            android:id="@+id/MenuImage"
+            android:id="@+id/menu_dots_current_playlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:src="@drawable/three_dots"
-            app:layout_constraintStart_toEndOf="@id/ShareImage"
-            app:layout_constraintTop_toBottomOf="@id/AllTime" />
+            app:layout_constraintStart_toEndOf="@id/share_current_playlist"
+            app:layout_constraintTop_toBottomOf="@id/full_time_current_playlist" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/TracksLayout"
-        style="@style/BottomSheetBackground"
+        android:id="@+id/playlist_bottom_menu_tracks"
+        style="@style/BottomSheetBG"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_bg"
@@ -125,7 +125,7 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View
-            style="@style/bottomSheetLineStyle"
+            style="@style/BottomSheetStroke"
             android:layout_width="50dp"
             android:layout_height="4dp"
             android:layout_gravity="center"
@@ -133,7 +133,7 @@
             android:background="@drawable/bottom_sheet_stroke" />
 
         <TextView
-            android:id="@+id/NoTracksText"
+            android:id="@+id/no_tracks_in_playlist"
             style="@style/NoTracksInPlaylist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -142,9 +142,8 @@
             android:text="В плейлист еще не добавлен ни один трек"
             android:visibility="gone" />
 
-
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/TracksRV"
+            android:id="@+id/rv_current_playlist"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -154,15 +153,15 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/BottomSheetOverlay"
+        android:id="@+id/menu_bottom_sheet_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/BottomMenuLayout"
-        style="@style/BottomSheetBackground"
+        android:id="@+id/bottom_menu_current_playlist"
+        style="@style/BottomSheetBG"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_bg"
@@ -173,8 +172,8 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View
-            android:id="@+id/BottomSheetLineSecond"
-            style="@style/bottomSheetLineStyle"
+            android:id="@+id/bottom_sheet_line_second"
+            style="@style/BottomSheetStroke"
             android:layout_width="50dp"
             android:layout_height="4dp"
             android:layout_gravity="center"
@@ -195,7 +194,7 @@
                 app:cardElevation="0dp">
 
                 <ImageView
-                    android:id="@+id/CurrentPlaylistCover"
+                    android:id="@+id/cover_bottom_current_playlist"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:scaleType="centerCrop"
@@ -208,7 +207,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/CurrentPlaylistTitle"
+                    android:id="@+id/title_bottom_current_playlist"
                     style="@style/MainText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -217,7 +216,7 @@
                     tools:text="Название" />
 
                 <TextView
-                    android:id="@+id/CurrentPlaylistTracksCount"
+                    android:id="@+id/track_amount_bottom_current_playlist"
                     style="@style/TrackArtist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -228,7 +227,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/CurrentPlaylistShare"
+            android:id="@+id/share_menu_current_playlist"
             style="@style/MainText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -238,9 +237,9 @@
             android:text="Поделиться" />
 
         <TextView
-            android:id="@+id/CurrentPlaylistEdit"
+            android:id="@+id/edit_menu_current_playlist"
             style="@style/MainText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:paddingTop="21dp"
@@ -248,9 +247,9 @@
             android:text="Изменить" />
 
         <TextView
-            android:id="@+id/CurrentPlaylistDeletae"
+            android:id="@+id/delete_menu_current_playlist"
             style="@style/MainText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:paddingTop="21dp"
