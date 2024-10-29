@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.presentation.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -19,16 +20,20 @@ import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.CURRENT_TRACK
 import com.practicum.playlistmaker.domain.model.Playlist
+import com.practicum.playlistmaker.presentation.ui.adapter.AudioPlayerAdapter
+import com.practicum.playlistmaker.presentation.ui.adapter.AudioPlayerViewHolder
 import com.practicum.playlistmaker.presentation.ui.adapter.PlaylistsAdapter
 import com.practicum.playlistmaker.presentation.ui.adapter.PlaylistsViewHolder
 import com.practicum.playlistmaker.presentation.ui.fragments.NewPlaylistFragment
 import com.practicum.playlistmaker.presentation.viewmodel.AudioPlayerViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class AudioPlayerActivity : AppCompatActivity() {
+class AudioPlayerActivity : AppCompatActivity(), AudioPlayerViewHolder.ClickListener {
     private lateinit var binding: ActivityAudioPlayerBinding
     private val viewModel: AudioPlayerViewModel by viewModel()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var adapter: AudioPlayerAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,6 +109,27 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.bottomSheetAddPlaylistBtn.setOnClickListener {
             showNewPlaylistFragment()
         }
+
+        binding.bottomSheetOverlay.setOnClickListener {
+            hideBottomSheet()
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.bottomSheetOverlay.visibility = View.GONE
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        binding.bottomSheetOverlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.bottomSheetOverlay.alpha = slideOffset
+            }
+        })
     }
 
     override fun onBackPressed() {
@@ -124,13 +150,9 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupPlaylistsRecyclerView() {
-        val adapter = PlaylistsAdapter(object : PlaylistsViewHolder.ClickListener {
-            override fun onClick(playlist: Playlist) {
-                viewModel.addTrackToPlaylist(playlist)
-                hideBottomSheet()
-            }
-        })
+        adapter = AudioPlayerAdapter(this)
         binding.bottomSheetRecyclerView.adapter = adapter
         binding.bottomSheetRecyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -141,6 +163,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun showBottomSheet() {
+        viewModel.refreshPlaylists()
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         binding.bottomSheetOverlay.visibility = View.VISIBLE
     }
@@ -150,6 +173,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.bottomSheetOverlay.visibility = View.GONE
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == NEW_PLAYLIST_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -175,5 +199,25 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     companion object {
         private const val NEW_PLAYLIST_REQUEST_CODE = 1
+    }
+
+    override fun onClick(playlist: Playlist) {
+        if (!viewModel.inPlaylist(
+                playlist = playlist,
+                trackId = viewModel.track.value?.trackId?.toLong() ?: 0
+            )
+        ) {
+            viewModel.track.value?.let { viewModel.addTrackToPlaylist(playlist) }
+            Toast.makeText(this, "${"Добавлено в плейлист"} ${playlist.name}",Toast.LENGTH_SHORT)
+                .show()
+            playlist.tracksAmount = playlist.tracksIds.size
+            BottomSheetBehavior.from(binding.bottomSheetAudioPlayer).apply {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        } else {
+            Toast.makeText(this,"${"Трек уже добавлен в плейлист"} ${playlist.name}",Toast.LENGTH_SHORT)
+                .show()
+        }
+        adapter.notifyDataSetChanged()
     }
 }

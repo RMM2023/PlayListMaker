@@ -130,7 +130,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/pl_duration"
-            android:textSize="13dp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toTopOf="@id/track_name_static"
             app:layout_constraintEnd_toStartOf="@id/barrier"
             app:layout_constraintStart_toEndOf="@id/guideline_left"
@@ -156,7 +156,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/pl_album"
-            android:textSize="13dp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toTopOf="@id/track_year_static"
             app:layout_constraintStart_toEndOf="@id/guideline_left"
             app:layout_constraintTop_toBottomOf="@id/track_time" />
@@ -180,7 +180,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/pl_year"
-            android:textSize="13dp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toTopOf="@id/track_genre_static"
             app:layout_constraintStart_toEndOf="@id/guideline_left"
             app:layout_constraintTop_toBottomOf="@id/track_name_static" />
@@ -203,7 +203,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/pl_genge"
-            android:textSize="13dp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toTopOf="@id/track_country_static"
             app:layout_constraintStart_toEndOf="@id/guideline_left"
             app:layout_constraintTop_toBottomOf="@id/track_year_static" />
@@ -227,7 +227,7 @@
             android:layout_marginBottom="20dp"
             android:padding="8dp"
             android:text="@string/pl_country"
-            android:textSize="13dp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline_left"
             app:layout_constraintTop_toBottomOf="@id/track_genre_static" />
@@ -266,12 +266,12 @@
         android:id="@+id/bottom_sheet_audio_player"
         style="@style/BottomSheetBG"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bottom_sheet"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_sheet_bg"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="505dp"
+        app:behavior_peekHeight="0dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View
@@ -290,7 +290,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
             android:gravity="center"
-            android:text="Добавить в плейлист" />
+            android:text="@string/add_to_playlist" />
 
         <Button
             android:id="@+id/bottom_sheet_add_playlist_btn"
@@ -300,7 +300,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bottom_sheet_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
             android:layout_marginTop="24dp" />
     </LinearLayout>
 

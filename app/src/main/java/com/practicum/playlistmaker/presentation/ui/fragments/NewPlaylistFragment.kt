@@ -67,7 +67,7 @@ open class NewPlaylistFragment : Fragment() {
                 getString(R.string.playlist_created),
                 Toast.LENGTH_SHORT
             ).show()
-            findNavController().navigateUp()
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         binding.newPlaylistNameEditTxt.doOnTextChanged { text, _, _, _ ->

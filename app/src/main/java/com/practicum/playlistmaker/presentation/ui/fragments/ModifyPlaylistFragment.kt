@@ -2,11 +2,7 @@ package com.practicum.playlistmaker.presentation.ui.fragments
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
@@ -37,9 +33,9 @@ class ModifyPlaylistFragment : NewPlaylistFragment() {
                 }
             }
 
-        binding.toolbarTitle.text = "Редактировать"
+        binding.toolbarTitle.text = getString(R.string.edit)
 
-        binding.createButton.text = "Сохранить"
+        binding.createButton.text = getString(R.string.save)
 
         binding.newPlaylistCover.setOnClickListener {
             chooseCover.launch(PickVisualMediaRequest((ActivityResultContracts.PickVisualMedia.ImageOnly)))

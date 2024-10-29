@@ -84,19 +84,15 @@ class CurrentPlaylistFragment : Fragment() {
                         bottomSheetBehaviorPlaylist.isHideable = false
                         binding.menuBottomSheetOverlay.visibility = View.GONE
                     }
-
                     else -> {
-                        bottomSheetBehaviorPlaylist.isHideable = true
-                        bottomSheetBehaviorPlaylist.state = BottomSheetBehavior.STATE_HIDDEN
                         binding.menuBottomSheetOverlay.visibility = View.VISIBLE
                     }
                 }
             }
 
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                bottomSheetBehaviorPlaylist.state = BottomSheetBehavior.STATE_COLLAPSED
-            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
+
         val bundle = Bundle().apply {
             putParcelable("modify_playlist", playlist)
         }
@@ -132,15 +128,40 @@ class CurrentPlaylistFragment : Fragment() {
         }
 
         binding.menuDotsCurrentPlaylist.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            binding.bottomMenuCurrentPlaylist.visibility = View.VISIBLE
             binding.titleBottomCurrentPlaylist.text = playlist.name
             binding.trackAmountBottomCurrentPlaylist.text = countTracks(playlist.tracksAmount)
+            binding.menuBottomSheetOverlay.visibility = View.VISIBLE
+
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.menuBottomSheetOverlay.visibility = View.GONE
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        binding.menuBottomSheetOverlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.menuBottomSheetOverlay.alpha = slideOffset
+            }
+        })
+
+        binding.menuBottomSheetOverlay.setOnClickListener{
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         vm.getPlaylistById(playlistId)
 
         vm.observeTrackCount().observe(viewLifecycleOwner) { trackCount ->
             binding.trackAmountCurrentPlaylist.text = countTracks(trackCount)
+            checkTracks()
         }
 
         vm.observePlaylistAllTime().observe(viewLifecycleOwner) {
@@ -166,13 +187,17 @@ class CurrentPlaylistFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    fun checkTracks(){
         if (playlist.tracksAmount == 0) {
             binding.noTracksInPlaylist.visibility = View.VISIBLE
         } else {
             binding.noTracksInPlaylist.visibility = View.GONE
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkTracks()
 
         val playlistId = playlist.id
         vm.getPlaylistById(playlistId)

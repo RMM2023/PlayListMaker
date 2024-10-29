@@ -134,6 +134,7 @@ class SearchFragment : Fragment() {
     private fun updateUIVisibility(hasResults: Boolean) {
         val searchText = binding.searchEditText.text.toString()
         val isSearchEmpty = searchText.isEmpty()
+        val hasHistory = historyAdapter.trackList.isNotEmpty()
 
         // Если есть результаты поиска, показываем результаты
         if (hasResults) {
@@ -144,13 +145,14 @@ class SearchFragment : Fragment() {
         } else {
             binding.trackRecycler.visibility = View.GONE
 
-            // Если строка поиска пустая, показываем историю поиска
+            // Если строка поиска пустая
             if (isSearchEmpty) {
-                binding.searchHistoryLayout.visibility = View.VISIBLE
+                // Показываем историю только если она не пуста
+                binding.searchHistoryLayout.visibility = if (hasHistory) View.VISIBLE else View.GONE
                 binding.NotFoundLayout.visibility = View.GONE
                 binding.NotConnectedLayout.visibility = View.GONE
             } else {
-                // Если строки поиска нет, и результатов поиска нет, показываем "Ничего не найдено"
+                // Если строка поиска не пустая и результатов нет
                 binding.searchHistoryLayout.visibility = View.GONE
                 binding.NotFoundLayout.visibility = if (viewModel.errorMessage.value == null) View.VISIBLE else View.GONE
                 binding.NotConnectedLayout.visibility = if (viewModel.errorMessage.value != null) View.VISIBLE else View.GONE
