@@ -23,7 +23,7 @@
     <string name="like_clicked_toast">%1$s добавлена в favorite</string>
     <string name="add_clicked_toast">%1$s Добавлен в Плейлист</string>
     <string name="new_playlist">"New Playlist "</string>
-    <string name="no_playlists">You have created\\nno playlists</string>
+    <string name="no_playlists">You have created no playlists</string>
     <string name="mediateka_empty">Your mediateka is empty</string>
     <string name="mediateka">Mediateka</string>
     <string name="SelectedTracks">Selected tracks</string>
@@ -48,4 +48,5 @@
     <string name="edit_information">Edit information</string>
     <string name="delete_playList">Delete playList</string>
     <string name="add_to_playlist">Add to playlist</string>
+    <string name="playlist_share">Share</string>
 </resources>

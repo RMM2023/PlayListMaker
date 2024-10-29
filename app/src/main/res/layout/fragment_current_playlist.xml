@@ -234,7 +234,7 @@
             android:layout_marginStart="16dp"
             android:paddingTop="21dp"
             android:paddingBottom="21dp"
-            android:text="@string/share" />
+            android:text="@string/playlist_share" />
 
         <TextView
             android:id="@+id/edit_menu_current_playlist"
