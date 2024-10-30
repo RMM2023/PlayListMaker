@@ -19,7 +19,8 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:scaleType="centerCrop"
-            tools:src="@drawable/placeholder" />
+            tools:src="@drawable/placeholder"
+            style="@style/BackgroundStyle"/>
     </androidx.cardview.widget.CardView>
 
     <LinearLayout

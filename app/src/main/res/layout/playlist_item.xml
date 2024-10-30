@@ -29,7 +29,8 @@
         android:layout_height="wrap_content"
         android:text="Название"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
 
     <TextView
         android:id="@+id/description_playlist"
