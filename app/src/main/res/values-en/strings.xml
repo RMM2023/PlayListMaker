@@ -46,7 +46,7 @@
     <string name="create">Create</string>
     <string name="no_tracks_in_playlist">No tracks in playlist</string>
     <string name="edit_information">Edit information</string>
-    <string name="delete_playList">Delete playList</string>
+    <string name="delete_playList">Delete playlist</string>
     <string name="add_to_playlist">Add to playlist</string>
     <string name="playlist_share">Share</string>
 </resources>
