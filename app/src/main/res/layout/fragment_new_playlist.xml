@@ -31,9 +31,10 @@
             android:layout_marginStart="8dp"/>
 
         <TextView
+            android:id="@+id/toolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Новый плейлист"
+            android:text="@string/new_playlist"
             android:textSize="22sp"
             android:fontFamily="@font/ys_display_medium"
             android:textFontWeight="500"
@@ -73,7 +74,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:hint="Название"
+        android:hint="@string/playListTitle"
         app:boxStrokeColor="@drawable/box_stroke"
         app:hintTextColor="@color/yp_blue_light"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +94,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:hint="Описание"
+        android:hint="@string/playListDescription"
         app:boxStrokeColor="@drawable/box_stroke"
         app:hintTextColor="@color/yp_blue_light"
         app:layout_constraintEnd_toEndOf="parent"
@@ -116,7 +117,7 @@
         android:backgroundTint="@color/yp_text_gray"
         android:enabled="false"
         android:padding="10dp"
-        android:text="Создать"
+        android:text="@string/create"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"

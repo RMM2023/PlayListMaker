@@ -17,6 +17,8 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackArtist = itemView.findViewById<TextView>(R.id.track_artist)
     private val trackTime = itemView.findViewById<TextView>(R.id.track_time)
 
+    private val screenWidth = itemView.resources.displayMetrics.widthPixels
+
     fun bind(track: Track) {
         if (track.artworkUrl100?.isNotEmpty() == true) {
             Glide.with(trackImage)
@@ -31,5 +33,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         trackTitle.text = track.trackName
         trackArtist.text = track.artistName
         trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        trackArtist.maxWidth = (screenWidth * 0.65).toInt()
+
     }
 }

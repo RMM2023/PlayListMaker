@@ -54,6 +54,21 @@ class AudioPlayerViewModel(
         refreshPlaylists()
     }
 
+    fun inPlaylist(playlist: Playlist, trackId: Long): Boolean {
+        var data = false
+        for (track in playlist.tracksIds) {
+            if (track == trackId) data = true
+        }
+        return data
+    }
+
+    fun clickOnAddtoPlaylist(playlist: Playlist, track: Track) {
+        viewModelScope.launch {
+            playlist.tracksAmount = playlist.tracksIds.size + 1
+            playlistsInteractor.addTrackToPlaylist(playlist, track)
+        }
+    }
+
 
     fun refreshPlaylists() {
         viewModelScope.launch {

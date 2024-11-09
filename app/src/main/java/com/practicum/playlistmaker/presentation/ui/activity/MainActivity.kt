@@ -10,7 +10,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+interface NavigationBarController {
+    fun hideNavBar()
+    fun showNavBar()
+}
+
+class MainActivity : AppCompatActivity(), NavigationBarController {
     lateinit var binding: ActivityMainBinding
     lateinit var navController: NavController
 
@@ -25,14 +30,17 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView = binding.bottomNavigationBar
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
     }
-    fun showNavBar() {
-        val navBar = binding.bottomNavigationBar
-        navBar.visibility = View.VISIBLE
+
+    override fun showNavBar() {
+        if (::binding.isInitialized) {
+            binding.bottomNavigationBar.visibility = View.VISIBLE
+        }
     }
 
-    fun hideNavBar() {
-        val navBar = binding.bottomNavigationBar
-        navBar.visibility = View.GONE
+    override fun hideNavBar() {
+        if (::binding.isInitialized) {
+            binding.bottomNavigationBar.visibility = View.GONE
+        }
     }
 
 }

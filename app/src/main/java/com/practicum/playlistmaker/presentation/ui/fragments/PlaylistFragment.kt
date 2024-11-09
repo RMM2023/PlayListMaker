@@ -35,6 +35,11 @@ class PlaylistFragment : Fragment(), PlaylistsViewHolder.ClickListener {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getPlaylists()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -106,6 +111,13 @@ class PlaylistFragment : Fragment(), PlaylistsViewHolder.ClickListener {
     }
 
     override fun onClick(playlist: Playlist) {
-        // тут будет реализовано нажатие в будущем
+        val bundle = Bundle().apply {
+            putParcelable("selected_playlist", playlist)
+        }
+        findNavController().navigate(
+            R.id.action_mediatekaFragment_to_currentPlaylistFragment,
+            bundle
+        )
+
     }
 }

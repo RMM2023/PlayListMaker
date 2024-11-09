@@ -14,4 +14,9 @@ interface PlaylistsRepository {
     suspend fun deletePlaylist(playlistId: Int)
     suspend fun newPlaylist(playlistName: String, playlistDescription: String, coverUri: Uri?)
     suspend fun getCover(): String
+    suspend fun getAllTracks(tracksIds: List<Long>): List<Track>
+    suspend fun deleteTrackFromPlaylist(playlistId: Int, trackId: Long)
+    suspend fun updatePlaylist(playlist: Playlist)
+    suspend fun trackCountDecrement(playlistId: Int)
+    suspend fun modifyData(name: String, description: String, cover: String, coverUri: Uri?, originalPlayList: Playlist)
 }

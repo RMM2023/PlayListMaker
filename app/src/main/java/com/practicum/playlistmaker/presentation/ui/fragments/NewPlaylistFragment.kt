@@ -21,9 +21,9 @@ import com.practicum.playlistmaker.presentation.ui.activity.MainActivity
 import com.practicum.playlistmaker.presentation.viewmodel.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment : Fragment() {
+open class NewPlaylistFragment : Fragment() {
     private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private var coverUriSelect: Uri? = null
     private var showedDialog: Boolean = false
     private val vm by viewModel<NewPlaylistViewModel>()
@@ -67,7 +67,7 @@ class NewPlaylistFragment : Fragment() {
                 getString(R.string.playlist_created),
                 Toast.LENGTH_SHORT
             ).show()
-            findNavController().navigateUp()
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         binding.newPlaylistNameEditTxt.doOnTextChanged { text, _, _, _ ->
@@ -114,7 +114,7 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun showDialog() {
-        MaterialAlertDialogBuilder(requireContext(), R.style.dialogStyle)
+        MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
             .setTitle(getString(R.string.cancel_playlist_creation))
             .setMessage(getString(R.string.all_unsaved_data_will_be_lostall_unsaved_data_will_be_lost))
             .setNegativeButton(getString(R.string.cancel)) { _, _ -> }

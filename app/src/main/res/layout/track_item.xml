@@ -28,8 +28,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:maxWidth="250dp"
                 android:ellipsize="end"
+                android:singleLine="true"
                 android:fontFamily="@font/ys_display_regular"
                 android:text="Smells Like Teen Spirit"
                 style="@style/TrackPrimary"
@@ -42,10 +42,13 @@
 
                 <TextView
                     android:id="@+id/track_artist"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     style="@style/TrackSecondary"
                     android:maxLines="1"
-                    android:maxWidth="200dp"
                     android:ellipsize="end"
+                    android:singleLine="true"
                     android:text="Nirvana"/>
 
                 <ImageView
@@ -54,9 +57,14 @@
                     android:src="@drawable/ellipse_1"
                     android:layout_gravity="center_vertical|start"
                     android:paddingHorizontal="5dp"/>
+
                 <TextView
                     android:id="@+id/track_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     style="@style/TrackSecondary"
+                    android:maxLines="1"
+                    android:singleLine="true"
                     android:text="5:01"/>
             </LinearLayout>
 
